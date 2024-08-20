@@ -1,2 +1,4 @@
 .cache.sqlite
 Datasets/WeatherData*.csv
+Actual_datasets/WeatherData.csv
+Actual_datasets/SuburbClustered.csv
