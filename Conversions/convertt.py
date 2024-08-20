@@ -29,3 +29,8 @@ def clusterID_to_variables(clusterID):
     # rain = filter["RainSum"]
     filterdf = pd.DataFrame(filter)
     return filterdf
+def suburb_to_var(suburb_name):
+    ClusterID = suburb_to_ClusterID(suburb_name)
+    variables = clusterID_to_variables(ClusterID.values[0])
+    return variables
+# print(suburb_to_var("Alpine"))
