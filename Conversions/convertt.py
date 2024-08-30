@@ -4,9 +4,9 @@ def suburb_to_lat_long(suburblist):
 
 
     suburbs = pd.read_csv("../Actual_datasets/SuburbClustered.csv")
-    filter = suburbs[suburbs["OfficialNameSuburb"].isin(suburblist)]
-    latitude = filter["Latitude"]
-    longtitude = filter["Longitude"]
+    filter = suburbs[suburbs["officialnamesuburb"].isin(suburblist)]
+    latitude = filter["lattitude"]
+    longtitude = filter["longtitude"]
     return [latitude,longtitude]
 # print(suburb_to_lat_long(["Alpine","Clayton"]))
 
@@ -15,8 +15,8 @@ def suburb_to_ClusterID(suburblist):
 
     suburbs = pd.read_csv("../Actual_datasets/SuburbClustered.csv")
     suburbs
-    filter = suburbs[suburbs["OfficialNameSuburb"].isin(suburblist)]
-    clusterID = filter["ClusterID"]
+    filter = suburbs[suburbs["officialnamesuburb"].isin(suburblist)]
+    clusterID = filter["clusterid"]
     return clusterID
 # print(suburb_to_ClusterID(["Alpine","Clayton"]))
 
