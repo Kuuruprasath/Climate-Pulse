@@ -12,9 +12,20 @@ CREATE TABLE WEATHERDATA (
 
 SELECT * FROM weatherdata;
 
-
-
 COPY WEATHERDATA FROM '../Actual_datasets/WeatherData.csv' DELIMITER ',' CSV HEADER;
 
+CREATE EXTENSION postgis;
+
+DROP TABLE SuburbClustered
+CREATE TABLE SuburbClustered (
+    OfficialNameSuburb VARCHAR(255),
+    OfficialNameState VARCHAR(255),
+    OfficialCodeLocalGovernmentArea VARCHAR(255),
+    OfficialCodeState VARCHAR(255),
+    Lattitude FLOAT,  
+    Longtitude FLOAT, 
+    GeoShape JSONB,  
+        ClusterID INTEGER
+);
 
 
