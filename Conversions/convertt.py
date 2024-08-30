@@ -1,5 +1,4 @@
 
-
 def suburb_to_lat_long(suburblist):
     import pandas as pd
 
@@ -25,7 +24,7 @@ def clusterID_to_variables(clusterList):
     import pandas as pd
 
     weather = pd.read_csv("../Actual_datasets/WeatherData.csv")
-    filter = weather[weather["ClusterID"].isin(clusterList) ]
+    filter = weather[weather["clusterid"].isin(clusterList) ]
     # mintemp = filter["TemperatureMin"]
     # maxtemp = filter["TemperatureMax"]
     # avgtemp = filter["TemperatureMean"]
