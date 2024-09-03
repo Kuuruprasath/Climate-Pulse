@@ -25,12 +25,32 @@ def suburb_to_lat_long(suburblist):
 def suburb_to_ClusterID(suburblist):  
     import pandas as pd
 
-    suburbs = pd.read_csv("../Actual_datasets/SuburbClustered.csv")
-    suburbs
-    filter = suburbs[suburbs["officialnamesuburb"].isin(suburblist)]
-    clusterID = filter["clusterid"]
-    return clusterID
-# print(suburb_to_ClusterID(["Alpine","Clayton"]))
+    # suburbs = pd.read_csv("../Actual_datasets/SuburbClustered.csv")
+    # suburbs
+    # filter = suburbs[suburbs["officialnamesuburb"].isin(suburblist)]
+    # clusterID = filter["clusterid"]
+    # return clusterID
+
+    import psycopg2
+    suburblist = tuple(suburblist)
+    conn = psycopg2.connect(
+        dbname="climatepulse",
+        host="postgres-1.c96iysms626t.ap-southeast-2.rds.amazonaws.com",
+        port=5432,
+        user="postgres",
+        password="Climatepulse123."
+    )
+    cursor = conn.cursor()
+    query = "SELECT clusterid FROM suburbclustered WHERE officialnamesuburb IN %s"
+    cursor.execute(query, (suburblist,))
+    dataset = cursor.fetchall()
+    # first_column = [row[0] for row in dataset]
+    # print(dataset)
+
+    cursor.close()
+    conn.close()
+    return dataset
+print(suburb_to_ClusterID(["Alpine","Clayton"]))
 
 def clusterID_to_variables(clusterList):  
     import pandas as pd
