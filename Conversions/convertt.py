@@ -74,20 +74,21 @@ def clusterID_to_variables(clusterList):
         password="Climatepulse123."
     )
     cursor = conn.cursor()
-    query = "SELECT datetime, temperaturemean,rainsum FROM weatherdata WHERE clusterid IN %s"
+    query = "SELECT clusterid, datetime, temperaturemean,rainsum FROM weatherdata WHERE clusterid IN %s"
     cursor.execute(query, (clusterlist,))
     dataset = cursor.fetchall()
-    datetime = [row[0] for row in dataset]
-    temperature =  [row[1] for row in dataset]
-    rainfall =  [row[2] for row in dataset]
+    clusterid = [row[0] for row in dataset]
+    datetime =  [row[1] for row in dataset]
+    temperature =  [row[2] for row in dataset]
+    rainfall =  [row[3] for row in dataset]
 
     cursor.close()
     conn.close()
-    return datetime,temperature,rainfall
+    return clusterid,datetime,temperature,rainfall
 # print(clusterID_to_variables([10849,106402]))
 def suburb_to_var(suburblist):
 
     ClusterID = suburb_to_ClusterID(suburblist)
-    datetime, temperature,rainfall = clusterID_to_variables(ClusterID)
-    return datetime, temperature, rainfall
+    clusterid, datetime, temperature,rainfall = clusterID_to_variables(ClusterID)
+    return clusterid,datetime, temperature, rainfall
 # print(suburb_to_var(["Alpine","Clayton"]))
