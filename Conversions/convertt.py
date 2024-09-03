@@ -1,13 +1,25 @@
 
 def suburb_to_lat_long(suburblist):
-    import pandas as pd
+    import psycopg2
+    suburblist = tuple(suburblist)
+    conn = psycopg2.connect(
+        dbname="climatepulse",
+        host="postgres-1.c96iysms626t.ap-southeast-2.rds.amazonaws.com",
+        port=5432,
+        user="postgres",
+        password="Climatepulse123."
+    )
+    cursor = conn.cursor()
+    query = "SELECT lattitude,longtitude FROM suburbclustered WHERE officialnamesuburb IN %s"
+    cursor.execute(query, (suburblist,))
+    dataset = cursor.fetchall()
+    # first_column = [row[0] for row in dataset]
+    # print(dataset)
 
+    cursor.close()
+    conn.close()
+    return dataset
 
-    suburbs = pd.read_csv("../Actual_datasets/SuburbClustered.csv")
-    filter = suburbs[suburbs["officialnamesuburb"].isin(suburblist)]
-    latitude = filter["lattitude"]
-    longtitude = filter["longtitude"]
-    return [latitude,longtitude]
 # print(suburb_to_lat_long(["Alpine","Clayton"]))
 
 def suburb_to_ClusterID(suburblist):  
