@@ -90,4 +90,4 @@ def suburb_to_var(suburblist):
     ClusterID = suburb_to_ClusterID(suburblist)
     datetime, temperature,rainfall = clusterID_to_variables(ClusterID)
     return datetime, temperature, rainfall
-print(suburb_to_var(["Alpine","Clayton"]))
+# print(suburb_to_var(["Alpine","Clayton"]))
