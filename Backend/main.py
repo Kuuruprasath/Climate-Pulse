@@ -5,6 +5,10 @@ import pandas as pd
 from flask import Flask, render_template, request
 import os
 
+import plotly.express as px
+from Conversions import convertt
+import psycopg2
+
 app = Flask(__name__, template_folder=os.path.abspath('../Webpages'), static_folder=os.path.abspath('../Webpages/static'))
 
 # This will store submitted data for demonstration purposes
@@ -64,6 +68,70 @@ def submit():
 
     # Render the table in an HTML template
     return render_template('table.html', location=locations, table=result.to_html(classes='data'))
+
+
+@app.route("/chart")
+def chart_input():
+    return render_template("chart.html")
+
+
+def get_dataset(suburbList):
+    import pandas as pd
+    clusterid,datetime,temperature,rainfall = convertt.suburb_to_var(suburbList)
+    dataset = {
+    'clusterid' : clusterid,
+    'datetime': datetime,
+    'temperature': temperature,
+    'rainfall': rainfall
+    }
+    dataset = pd.DataFrame(dataset)
+    return dataset
+
+def lineChart(dataset,variable,startDate,endDate,period,suburbs):
+
+
+    dataset["datetime"] = pd.to_datetime(dataset["datetime"])
+    dataset['datetime'] = dataset['datetime'].dt.tz_localize('UTC').dt.tz_convert('UTC')
+    daterange = pd.date_range(startDate, endDate, freq=period)
+
+    filtered_dataset = dataset[dataset["datetime"].isin(daterange)]
+    fig = px.line(filtered_dataset, y=variable,x = "datetime",color= 'clusterid')
+
+    unique_values = filtered_dataset['clusterid'].unique()
+    newnames = {int(unique_values[i]): suburbs[i] for i in range(len(unique_values))}
+
+    fig.for_each_trace(lambda t: t.update(name=newnames.get(int(t.name), t.name),
+                                      legendgroup=newnames.get(int(t.name), t.name),
+                                      hovertemplate=t.hovertemplate.replace(t.name, newnames.get(int(t.name), t.name))
+                                     ))
+    
+    fig.update_layout(plot_bgcolor='white')
+    
+    return fig
+
+
+@app.route('/process', methods=['POST'])
+def process():
+    start_date = pd.Timestamp(request.form['startDate'], tz='UTC')
+    end_date = pd.Timestamp(request.form['endDate'], tz='UTC')
+    variable = request.form['variable']
+    period = request.form['period']
+    
+    # Suburbs entered as a comma-separated string, split by commas and strip extra spaces
+    suburbs = [suburb.strip() for suburb in request.form['suburbs'].split(',')]
+
+    dataset = get_dataset(suburbs)
+    
+    
+    fig = lineChart(dataset,variable,start_date,end_date,period,suburbs)
+    
+    fig_html = fig.to_html(full_html=False)
+
+    # Render the figure in the template
+    return render_template('plot.html', fig_html=fig_html)
+
+    # Perform your data processing here
+    #return f"Start Date: {start_date}, End Date: {end_date}, Variable: {variable}, Period: {period}, Suburbs: {suburbs}"
 
 
 

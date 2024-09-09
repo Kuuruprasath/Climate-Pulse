@@ -7,3 +7,4 @@ retry_requests
 plotly
 psycopg2
 convertt
+nbformat

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Data Input</title>
+</head>
+<body>
+    <h2>Enter Sample Data</h2>
+    <form action="/process" method="POST">
+        <!-- Start Date Input -->
+        <label for="startDate">Start Date:</label><br>
+        <input type="date" id="startDate" name="startDate" value="2015-01-01" required><br><br>
+
+        <!-- End Date Input -->
+        <label for="endDate">End Date:</label><br>
+        <input type="date" id="endDate" name="endDate" value="2024-07-31" required><br><br>
+
+        <!-- Variable Input (Temperature only for now) -->
+        <label for="variable">Variable:</label><br>
+        <select id="variable" name="variable" required>
+            <option value="temperature">Temperature</option>
+        </select><br><br>
+
+        <!-- Period Input -->
+        <label for="period">Period:</label><br>
+        <input type="text" id="period" name="period" value="M" required><br><br>
+
+        <!-- Suburbs Input (Text Box) -->
+        <label for="suburbs">Suburbs (comma-separated):</label><br>
+        <input type="text" id="suburbs" name="suburbs" placeholder="Alpine, Clayton" required><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+
