@@ -1,0 +1,9 @@
+Flask
+numpy
+pandas
+requests-cache
+openmeteo_requests
+retry_requests
+plotly
+psycopg2
+convertt
