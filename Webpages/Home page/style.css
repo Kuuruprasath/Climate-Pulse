@@ -1,0 +1,239 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #1a1a1a; /* Set background color to dark gray */
+}
+
+.map-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #FFFFFF; /* Set the background color of the map to white */
+    z-index: 1; /* Ensure it's at the bottom layer */
+}
+
+.header-container {
+    position: relative;
+    background-color: #000; /* Set background color to black */
+    color: white; /* Set text color to white */
+    z-index: 4; /* Keep the header at the top layer */
+}
+
+.navigation-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    height: 40px;
+    position: relative;
+    z-index: 4; /* Keep the navigation bar at the top layer */
+}
+
+.nav-item {
+    color: white; /* Set text color to white */
+    text-decoration: none; /* Remove underline from links */
+    font-weight: bold;
+    font-size: 16px;
+    padding: 0 15px; /* Add padding between navigation items */
+}
+
+.nav-item:hover {
+    color: #F4D548; /* Change text color to yellow on hover */
+}
+
+.yellow-semi-circle {
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    transform: translateX(-50%); /* Center the element horizontally */
+    z-index: 5; /* Ensure it is on top of all elements */
+    width: 240px;
+    height: 120px;
+    background-color: #F4D548; /* Set the background color to yellow */
+    border-bottom-left-radius: 240px; /* Create semi-circle */
+    border-bottom-right-radius: 240px; /* Create semi-circle */
+    text-align: center;
+    color: #000; /* Set text color to black */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid #000; /* Add black border */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5); /* Add a shadow effect */
+}
+
+.yellow-semi-circle svg {
+    position: absolute;
+    top: -25px; /* Adjust position of the SVG */
+}
+
+.yellow-semi-circle text {
+    font-family: "Paytone One", sans-serif; /* Set font for the curved text */
+    font-weight: 400;
+    font-size: 24px;
+    letter-spacing: 0px;
+}
+
+.yellow-semi-circle .logo {
+    width: 80px;
+    height: 80px;
+    margin-top: 15px;
+    background-color: #F4D548; /* Set background color to match semi-circle */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.yellow-semi-circle .logo img {
+    width: 100%; /* Ensure the image takes full width */
+    height: 100%; /* Ensure the image takes full height */
+}
+
+#widget-container {
+    position: relative;
+    z-index: 3; /* Place below the navigation bar */
+    margin-top: -10px; /* Ensure it is just below the navigation bar */
+    padding-top: 30px; /* Add padding to prevent overlapping with the semi-circle */
+}
+
+#widget-container div {
+    position: relative;
+    margin-top: -20px; /* Adjust position to prevent gap with the previous element */
+    z-index: 3; /* Ensure it's beneath the navigation */
+}
+
+/* Left and right panel icon settings */
+.left-panel,
+.right-panel {
+    position: absolute;
+    display: flex;
+    flex-direction: column; /* Stack the icons vertically */
+    gap: 30px; /* Space between the icons */
+    z-index: 3; /* Place above the map, but below the widget */
+}
+
+/* Left panel icons */
+.left-panel {
+    top: calc(100% - 610px); /* Position the panel near the bottom */
+    left: 20px; /* Align the panel to the left */
+    transform: translateY(-100%); /* Ensure it's placed at the correct vertical position */
+}
+
+/* Right panel icons */
+.right-panel {
+    top: calc(100% - 330px); /* Position the panel near the bottom */
+    right: 10px; /* Align the panel to the right */
+    transform: translateY(-100%); /* Ensure it's placed at the correct vertical position */
+    align-items: flex-end; /* Align icons to the right inside the panel */
+}
+
+.left-panel img,
+.right-panel img {
+    width: 40px; /* Set width for the icons */
+    height: 40px; /* Set height for the icons */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    position: relative;
+}
+
+.left-panel img:hover,
+.right-panel img:hover {
+    background-color: #F4D548; /* Change background color to yellow on hover */
+    border-radius: 50%; /* Make the background round */
+}
+
+/* Tooltip that shows the function of the icons */
+.left-panel img::after,
+.right-panel img::after {
+    content: attr(alt); /* Use the alt attribute as tooltip text */
+    position: absolute;
+    bottom: -30px; /* Position the tooltip below the icon */
+    left: 50%; /* Center the tooltip */
+    transform: translateX(-50%);
+    background-color: #000; /* Set background color to black */
+    color: #FFF; /* Set text color to white */
+    padding: 3px 6px; /* Add padding around the tooltip */
+    border-radius: 5px; /* Round the corners of the tooltip */
+    opacity: 0; /* Initially hide the tooltip */
+    transition: opacity 0.3s ease-in-out; /* Smooth transition when showing tooltip */
+    white-space: nowrap; /* Prevent text wrapping */
+    pointer-events: none; /* Disable mouse interactions for the tooltip */
+}
+
+.left-panel img:hover::after,
+.right-panel img:hover::after {
+    opacity: 1; /* Show the tooltip on hover */
+}
+
+/* Switch bar for changing layers, with adjusted icon sizes and spacing */
+.switch-bar {
+    background-color: rgba(0, 0, 0, 0.5); /* Set background color to black with 50% transparency */
+    padding: 5px;
+    display: flex;
+    flex-direction: row; /* Align icons in a row */
+    justify-content: space-around; /* Add space between icons */
+    align-items: center;
+    border-radius: 25px; /* Round the corners of the bar */
+    width: 100px; /* Set the width of the bar */
+    margin-right: 0; /* Align the bar to the right */
+}
+
+/* Toolbar with adjusted icon sizes and spacing */
+.tool-bar {
+    background-color: rgba(0, 0, 0, 0.5); /* Set background color to black with 50% transparency */
+    padding: 5px;
+    display: flex;
+    flex-direction: row; /* Align icons in a row */
+    justify-content: space-around; /* Add space between icons */
+    align-items: center;
+    border-radius: 25px; /* Round the corners of the bar */
+    width: 200px; /* Set the width of the bar */
+    margin-right: 0; /* Align the bar to the right */
+}
+
+.switch-bar img {
+    width: 30px; /* Set icon width */
+    height: 30px; /* Set icon height */
+    margin: 0 5px; /* Add margin between icons */
+    position: relative;
+}
+
+.tool-bar img {
+    width: 30px; /* Set icon width */
+    height: 30px; /* Set icon height */
+    margin: 0 5px; /* Add margin between icons */
+    position: relative;
+}
+
+/* Tooltip for switch and toolbar icons */
+.switch-bar img:hover::after,
+.tool-bar img:hover::after {
+    content: attr(alt); /* Use the alt attribute as tooltip text */
+    position: absolute;
+    top: 50px; /* Position tooltip above the icon */
+    left: 50%; /* Center the tooltip */
+    transform: translateX(-50%);
+    background-color: #000; /* Set background color to black */
+    color: #FFF; /* Set text color to white */
+    padding: 3px 6px; /* Add padding around the tooltip */
+    border-radius: 5px; /* Round the corners of the tooltip */
+    opacity: 1; /* Show the tooltip on hover */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+/* Set initial scale of the body element */
+body {
+    transform: scale(1);
+    transform-origin: top left; /* Set the origin point for scaling */
+}
+
+/* Apply scaling for screens with a width of at least 1024px */
+@media (min-width: 1024px) {
+    body {
+        transform: scale(calc(100vw / 1920)); /* Scale body based on viewport width */
+    }
+}
