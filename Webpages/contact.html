@@ -5,7 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Climate-Pulse - Contact Us</title>
-    <link rel="stylesheet" href="contact.css">
+
+    <!-- Link to external CSS file from the static folder -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}">
+
+    <!-- Google Fonts -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Paytone+One&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
@@ -13,10 +17,13 @@
 </head>
 
 <body>
+    <!-- Header and Navigation Bar -->
     <div class="header-container">
         <div class="navigation-bar">
             <a href="#" class="nav-item">Home</a>
             <a href="#" class="nav-item" style="margin-right: 100px;">Weather Warnings</a>
+
+            <!-- Curved text and logo section -->
             <div class="yellow-semi-circle">
                 <!-- SVG for curved text -->
                 <svg width="240" height="120">
@@ -27,53 +34,63 @@
                         </textPath>
                     </text>
                 </svg>
+
+                <!-- Logo image with Flask static path -->
                 <div class="logo">
-                    <img src="image/ClimatePulse_logo.png" alt="Logo">
+                    <img src="{{ url_for('static', filename='images/ClimatePulse_logo.png') }}" alt="Logo">
                 </div>
             </div>
+
             <a href="#" class="nav-item" style="margin-left: 100px;">User Guide</a>
             <a href="#" class="nav-item">Contact Us</a>
         </div>
     </div>
 
+    <!-- Weather Widget -->
     <div id="widget-container">
         <div id="ww_9a1c6d42ce1d2" v='1.3' loc='auto'
             a='{"t":"ticker","lang":"en","sl_lpl":1,"ids":[],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"#000000","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>
             Weather Data Source: <a href="https://wetterlang.de/wetter_21_tage/" id="ww_9a1c6d42ce1d2_u"
-                target="_blank">Wetter fur 21 tage</a></div>
+                target="_blank">Wetter fur 21 tage</a>
+        </div>
         <script async src="https://app2.weatherwidget.org/js/?id=ww_9a1c6d42ce1d2"></script>
     </div>
 
+    <!-- Contact Form Section -->
     <div class="form-box">
         <h1>Contact Form</h1>
         <p>
             Have any questions or want to enquire? Please feel free to contact us through the form
             below.
         </p>
+
+        <!-- Contact Form -->
         <form action="#" id="contact-form" method="post">
 
-
+            <!-- First Name Input -->
             <label for="first-name">First name <span class="required">*</span></label>
             <input id="first-name" type="text" name="First-name" required>
 
-            <label for="last-name">Last name</label>
-            <input id="name" type="text" name="Last-name" required>
+            <!-- Last Name Input -->
+            <label for="last-name">Last name <span class="required">*</span></label>
+            <input id="last-name" type="text" name="Last-name" required>
 
-
+            <!-- Email Input -->
             <label for="email">Email <span class="required">*</span></label>
             <input id="email" type="email" name="Email" required>
 
+            <!-- Subject Input -->
             <label for="subject">Subject</label>
             <input id="subject" type="text" name="Subject" required>
 
+            <!-- Message Input -->
             <label for="message">Message <span class="required">*</span></label>
             <textarea id="message" name="Message" placeholder="Type your message here" rows="7" required></textarea>
 
+            <!-- Submit Button -->
             <input type="submit" value="Submit" />
-
         </form>
     </div>
-
 </body>
 
 </html>
