@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Display a temperature layer</title>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v2.2.2/maptiler-sdk.umd.min.js"></script>
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v2.2.2/maptiler-sdk.css" rel="stylesheet" />
+  <script src="https://cdn.maptiler.com/maptiler-weather/v2.0.0/maptiler-weather.umd.min.js"></script>
+  <style>
+    body { margin: 0; padding: 0; font-family: sans-serif; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    #pointer-data {
+      z-index: 1;
+      position: fixed;
+      font-size: 20px;
+      font-weight: 900;
+      margin: 27px 0px 0px 10px;
+      color: #fff;
+      text-shadow: 0px 0px 10px #0007;
+    }
+
+    #variable-name {
+      z-index: 1;
+      position: fixed;
+      font-size: 20px;
+      font-weight: 500;
+      margin: 5px 0px 0px 10px;
+      color: #fff;
+      text-shadow: 0px 0px 10px #0007;
+    }
+
+    #time-info {
+      position: fixed;
+      width: 60vw;
+      bottom: 0;
+      z-index: 1;
+      margin: 10px;
+      text-shadow: 0px 0px 5px black;
+      color: white;
+      font-size: 18px;
+      font-weight: 500;
+      text-align: center;
+      left: 0;
+      right: 0;
+      margin: auto;
+      padding: 20px;
+    }
+
+    #time-text {
+      font-size: 12px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div id="time-info">
+    <span id="time-text"></span>
+  </div>
+  <div id="variable-name">Temperature</div>
+  <div id="pointer-data"></div>
+  <div id="map"></div>
+  <script>
+      maptilersdk.config.apiKey = 'E4a8SUjGeLYpKsZvu7tx';
+      const map = (window.map = new maptilersdk.Map({
+        container: 'map', // container's id or the HTML element to render the map
+        style: maptilersdk.MapStyle.STREET,  // stylesheet location
+        zoom: 4, // Adjust zoom for better view over Australia
+        center: [133.7751, -25.2744], // Centered over Australia
+        hash: true,
+      }));
+
+      const timeTextDiv = document.getElementById("time-text");
+      const pointerDataDiv = document.getElementById("pointer-data");
+      let pointerLngLat = null;
+
+      const weatherLayer = new maptilerweather.TemperatureLayer({
+        colorramp: maptilerweather.ColorRamp.builtin.TEMPERATURE_3
+      });
+
+      // Called when the animation is progressing
+      weatherLayer.on("tick", event => {
+        refreshTime();
+        updatePointerValue(pointerLngLat);
+      });
+
+      map.on('load', function () {
+        map.setPaintProperty("Water", 'fill-color', "rgba(0, 0, 0, 0.4)");
+        map.addLayer(weatherLayer, 'Water');
+        weatherLayer.animateByFactor(3600);
+      });
+
+      map.on('mouseout', function(evt) {
+        if (!evt.originalEvent.relatedTarget) {
+          pointerDataDiv.innerText = "";
+          pointerLngLat = null;
+        }
+      });
+
+      // Update the date time display
+      function refreshTime() {
+        const d = weatherLayer.getAnimationTimeDate();
+        timeTextDiv.innerText = d.toString();
+      }
+
+      function updatePointerValue(lngLat) {
+        if (!lngLat) return;
+        pointerLngLat = lngLat;
+        const value = weatherLayer.pickAt(lngLat.lng, lngLat.lat);
+        if (!value) {
+          pointerDataDiv.innerText = "";
+          return;
+        }
+        pointerDataDiv.innerText = `${value.value.toFixed(1)}°`
+      }
+
+      map.on('mousemove', (e) => {
+        updatePointerValue(e.lngLat);
+      });
+
+  </script>
+</body>
+</html>
+
+
