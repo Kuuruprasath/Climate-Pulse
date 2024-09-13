@@ -14,7 +14,7 @@ app = Flask(__name__, template_folder=os.path.abspath('../Webpages'), static_fol
 # This will store submitted data for demonstration purposes
 submitted_data = []
 
-@app.route("/")
+@app.route("/home", methods=['GET'])
 def home():
     return render_template("Home page/index.html")
 
@@ -143,7 +143,7 @@ def process():
 
 
 
-@app.route("/contact")
+@app.route("/contact", methods=['GET'])
 def contact():
     return render_template("contact.html")
 
