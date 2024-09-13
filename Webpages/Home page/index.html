@@ -29,7 +29,7 @@
 
 <!-- Middle layer: icons, navigation bar, and widgets -->
 <div class="left-panel">
-    <img src="{{ url_for('static', filename='images/Setting.png') }}" alt="Settings">
+    <img src="{{ url_for('static', filename='images/Setting.png') }}" alt="Settings" id="settings-btn">
     <img src="{{ url_for('static', filename='images/Favourite.png') }}" alt="Favourite">
 </div>
 
@@ -50,6 +50,26 @@
         <img src="{{ url_for('static', filename='images/Empty.png') }}" alt="Reset Map">
     </div>
 </div>
+
+
+<!-- Form container for Climate Data Form (hidden by default) -->
+<div class="form-popup" id="climate-data-form">
+    <span class="close-btn" id="close-form">&times;</span> <!-- Close button -->
+    <h1>Submit Location for Weather Prediction</h1>
+    <form action="/submit" method="post">
+        <label for="location">Enter Location (latitude, longitude):</label><br>
+        <input type="text" id="location" name="location" required><br>
+
+        <label for="variable">Select Variable:</label><br>
+        <select id="variable" name="variable">
+            <option value="temperature">Temperature</option>
+            <option value="rain">Rain</option>
+        </select><br>
+
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
 
 <!-- Header container and navigation bar -->
 <div class="header-container">
@@ -84,6 +104,7 @@
     <script async src="https://app2.weatherwidget.org/js/?id=ww_9a1c6d42ce1d2"></script>
 </div>
 
+
 <!-- JavaScript to switch between layers -->
 <script>
     const rainfallBtn = document.getElementById('rainfall-btn');
@@ -99,6 +120,31 @@
     temperatureBtn.addEventListener('click', () => {
         mapLayer.src = '{{ url_for("temperature_wind") }}';
     });
+
+
+    const settingsBtn = document.getElementById('settings-btn');
+    const formPopup = document.getElementById('climate-data-form');
+    const closeFormBtn = document.getElementById('close-form');
+
+    // Show the form when the settings icon is clicked
+    settingsBtn.addEventListener('click', function() {
+        formPopup.style.display = 'block';
+    });
+
+    // Hide the form when the close button is clicked
+    closeFormBtn.addEventListener('click', function() {
+        formPopup.style.display = 'none';
+    });
+
+    // Optionally close the form if user clicks outside the form area
+    window.addEventListener('click', function(event) {
+        if (event.target == formPopup) {
+            formPopup.style.display = 'none';
+        }
+    });
+
+
+
 </script>
 
 </body>

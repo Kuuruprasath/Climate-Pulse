@@ -26,7 +26,6 @@ def temperature_wind():
 def precipitation():
     return render_template('Home page/precipitation.html')
 
-
 def prediction_call(locations):
     cache_session = requests_cache.CachedSession('.cache', expire_after=3600)
     retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
