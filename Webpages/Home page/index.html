@@ -4,46 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Climate Pulse</title>
-    <link rel = "stylesheet" type = "text/css" href = "style.css">
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Paytone+One&display=swap'); 
-    @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Paytone+One&family=Russo+One&display=swap" rel="stylesheet">
 
-    .map-container iframe {
-        width: 100%;
-        height: 100vh;
-        border: none; /* Remove iframe border */
-    }
+    <style>
+        .map-container iframe {
+            width: 100%;
+            height: 100vh;
+            border: none; /* Remove iframe border */
+        }
     </style>
 </head>
 <body>
 
 <!-- Map container (bottom layer) -->
 <div class="map-container">
-    <iframe id="map-layer" src="temperature-wind.html"></iframe> <!-- Default to loading temperature-wind.html -->
+    <!-- Default to loading temperature-wind through its Flask route -->
+    <iframe id="map-layer" src="{{ url_for('temperature_wind') }}"></iframe>
 </div>
 
 <!-- Middle layer: icons, navigation bar, and widgets -->
 <div class="left-panel">
-    <img src="images/Setting.png" alt="Settings">
-    <img src="images/Favourite.png" alt="Favourite">
+    <img src="{{ url_for('static', filename='images/Setting.png') }}" alt="Settings" id="settings-btn">
+    <img src="{{ url_for('static', filename='images/Favourite.png') }}" alt="Favourite">
 </div>
 
 <div class="right-panel">
-    <img src="images/Search.png" alt="Search">
-    <img src="images/Find_my_location.png" alt="Find My Location">
-    <img src="images/About_us.png" alt="About Us">
-    <img src="images/Warnings.png" alt="Weather Warnings">
+    <img src="{{ url_for('static', filename='images/Search.png') }}" alt="Search">
+    <img src="{{ url_for('static', filename='images/Find_my_location.png') }}" alt="Find My Location">
+    <img src="{{ url_for('static', filename='images/About_us.png') }}" alt="About Us">
+    <img src="{{ url_for('static', filename='images/Warnings.png') }}" alt="Weather Warnings">
+    
     <div class="switch-bar">
-        <img src="images/Rainfall.png" alt="Rainfall" id="rainfall-btn">
-        <img src="images/Temperature.png" alt="Temperature" id="temperature-btn">
+        <img src="{{ url_for('static', filename='images/Rainfall.png') }}" alt="Rainfall" id="rainfall-btn">
+        <img src="{{ url_for('static', filename='images/Temperature.png') }}" alt="Temperature" id="temperature-btn">
     </div>
+
     <div class="tool-bar">
-        <img src="images/Plus.png" alt="Zoom In">
-        <img src="images/Minus.png" alt="Zoom Out">
-        <img src="images/Empty.png" alt="Reset Map">
+        <img src="{{ url_for('static', filename='images/Plus.png') }}" alt="Zoom In">
+        <img src="{{ url_for('static', filename='images/Minus.png') }}" alt="Zoom Out">
+        <img src="{{ url_for('static', filename='images/Empty.png') }}" alt="Reset Map">
     </div>
 </div>
+
+
+<!-- Form container for Climate Data Form (hidden by default) -->
+<div class="form-popup" id="climate-data-form">
+    <span class="close-btn" id="close-form">&times;</span> <!-- Close button -->
+    <h1>Submit Location for Weather Prediction</h1>
+    <form action="/submit" method="post">
+        <label for="location">Enter Location (latitude, longitude):</label><br>
+        <input type="text" id="location" name="location" required><br>
+
+        <label for="variable">Select Variable:</label><br>
+        <select id="variable" name="variable">
+            <option value="temperature">Temperature</option>
+            <option value="rain">Rain</option>
+        </select><br>
+
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
 
 <!-- Header container and navigation bar -->
 <div class="header-container">
@@ -61,7 +87,7 @@
                 </text>
             </svg>
             <div class="logo">
-                <img src="images/ClimatePulse_logo.png" alt="Logo">
+                <img src="{{ url_for('static', filename='images/ClimatePulse_logo.png') }}" alt="Logo">
             </div>
         </div>
         <a href="#" class="nav-item" style="margin-left: 100px;">User Guide</a>
@@ -78,22 +104,49 @@
     <script async src="https://app2.weatherwidget.org/js/?id=ww_9a1c6d42ce1d2"></script>
 </div>
 
+
 <!-- JavaScript to switch between layers -->
 <script>
     const rainfallBtn = document.getElementById('rainfall-btn');
     const temperatureBtn = document.getElementById('temperature-btn');
     const mapLayer = document.getElementById('map-layer');
 
-    // Switch to the precipitation layer (precipitation.html)
+    // Switch to the precipitation layer
     rainfallBtn.addEventListener('click', () => {
-        mapLayer.src = 'precipitation.html';
+        mapLayer.src = '{{ url_for("precipitation") }}';
     });
 
-    // Switch to the temperature layer (temperature-wind.html)
+    // Switch to the temperature layer
     temperatureBtn.addEventListener('click', () => {
-        mapLayer.src = 'temperature-wind.html';
+        mapLayer.src = '{{ url_for("temperature_wind") }}';
     });
+
+
+    const settingsBtn = document.getElementById('settings-btn');
+    const formPopup = document.getElementById('climate-data-form');
+    const closeFormBtn = document.getElementById('close-form');
+
+    // Show the form when the settings icon is clicked
+    settingsBtn.addEventListener('click', function() {
+        formPopup.style.display = 'block';
+    });
+
+    // Hide the form when the close button is clicked
+    closeFormBtn.addEventListener('click', function() {
+        formPopup.style.display = 'none';
+    });
+
+    // Optionally close the form if user clicks outside the form area
+    window.addEventListener('click', function(event) {
+        if (event.target == formPopup) {
+            formPopup.style.display = 'none';
+        }
+    });
+
+
+
 </script>
 
 </body>
 </html>
+

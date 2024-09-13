@@ -16,8 +16,15 @@ submitted_data = []
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("Home page/index.html")
 
+@app.route('/temperature-wind')
+def temperature_wind():
+    return render_template('Home page/temperature-wind.html')
+
+@app.route('/precipitation')
+def precipitation():
+    return render_template('Home page/precipitation.html')
 
 def prediction_call(locations):
     cache_session = requests_cache.CachedSession('.cache', expire_after=3600)
