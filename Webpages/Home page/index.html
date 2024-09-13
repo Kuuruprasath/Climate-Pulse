@@ -56,7 +56,7 @@
 <div class="form-popup" id="climate-data-form">
     <span class="close-btn" id="close-form">&times;</span> <!-- Close button -->
     <h1>Submit Location for Weather Prediction</h1>
-    <form action="/submit" method="post">
+    <form action="/predict_model_API" method="post">
         <label for="location">Enter Location (latitude, longitude):</label><br>
         <input type="text" id="location" name="location" required><br>
 
@@ -74,7 +74,7 @@
 <!-- Header container and navigation bar -->
 <div class="header-container">
     <div class="navigation-bar">
-        <a href="#" class="nav-item">Home</a>
+        <a href="{{ url_for('home') }}" class="nav-item">Home</a>
         <a href="#" class="nav-item" style="margin-right: 100px;">Weather Warnings</a>
         <div class="yellow-semi-circle">
             <!-- SVG for curved text -->
@@ -91,7 +91,7 @@
             </div>
         </div>
         <a href="#" class="nav-item" style="margin-left: 100px;">User Guide</a>
-        <a href="#" class="nav-item">Contact Us</a>
+        <a href="{{ url_for('contact') }}" class="nav-item">Contact Us</a>
     </div>
 </div>
 
