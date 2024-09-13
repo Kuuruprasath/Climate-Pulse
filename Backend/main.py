@@ -66,7 +66,7 @@ def extract_process(responses):
     return daily_df
 
 
-@app.route('/submit', methods=['POST'])
+@app.route('/predict_model_API', methods=['POST'])
 def submit():
    # Get the location and selected variable from the form
     locations = request.form.get('location')
