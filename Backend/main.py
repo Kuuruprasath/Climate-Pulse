@@ -77,11 +77,6 @@ def submit():
     return render_template('table.html', location=locations, table=result.to_html(classes='data'))
 
 
-@app.route("/chart")
-def chart_input():
-    return render_template("chart.html")
-
-
 def get_dataset(suburbList):
     import pandas as pd
     clusterid,datetime,temperature,rainfall = convertt.suburb_to_var(suburbList)
@@ -116,6 +111,62 @@ def lineChart(dataset,variable,startDate,endDate,period,suburbs):
     
     return fig
 
+def barChart(dataset,variable,startDate,endDate,period,suburbs):
+
+
+    dataset["datetime"] = pd.to_datetime(dataset["datetime"])
+    dataset['datetime'] = dataset['datetime'].dt.tz_localize('UTC').dt.tz_convert('UTC')
+    daterange = pd.date_range(startDate, endDate, freq=period)
+
+    filtered_dataset = dataset[dataset["datetime"].isin(daterange)]
+
+    fig = px.bar(filtered_dataset, y=variable,x = "datetime",color ='clusterid' )
+    fig.update_layout(plot_bgcolor='white')
+    return fig
+
+def histogram(dataset,variable,startDate,endDate,period,suburbs):
+
+
+    dataset["datetime"] = pd.to_datetime(dataset["datetime"])
+    dataset['datetime'] = dataset['datetime'].dt.tz_localize('UTC').dt.tz_convert('UTC')
+
+    daterange = pd.date_range(startDate, endDate, freq=period)
+
+    filtered_dataset = dataset[dataset["datetime"].isin(daterange)]
+
+    fig = px.histogram(filtered_dataset,x = variable,nbins=31,color='clusterid')
+    unique_values = filtered_dataset['clusterid'].unique()
+    newnames = {int(unique_values[i]): suburbs[i] for i in range(len(unique_values))}
+
+    fig.for_each_trace(lambda t: t.update(name=newnames.get(int(t.name), t.name),
+                                      legendgroup=newnames.get(int(t.name), t.name),
+                                      hovertemplate=t.hovertemplate.replace(t.name, newnames.get(int(t.name), t.name))
+                                     ))
+    fig.update_layout(plot_bgcolor='white')
+
+    return fig
+
+def areaChart(dataset,variable,startDate,endDate,period,suburbs):
+
+
+    dataset["datetime"] = pd.to_datetime(dataset["datetime"])
+    dataset['datetime'] = dataset['datetime'].dt.tz_localize('UTC').dt.tz_convert('UTC')
+    daterange = pd.date_range(startDate, endDate, freq=period)
+
+    filtered_dataset = dataset[dataset["datetime"].isin(daterange)]
+
+    fig = px.area(filtered_dataset,x = "datetime",y = variable,color = 'clusterid')
+    unique_values = filtered_dataset['clusterid'].unique()
+    newnames = {int(unique_values[i]): suburbs[i] for i in range(len(unique_values))}
+
+    fig.for_each_trace(lambda t: t.update(name=newnames.get(int(t.name), t.name),
+                                      legendgroup=newnames.get(int(t.name), t.name),
+                                      hovertemplate=t.hovertemplate.replace(t.name, newnames.get(int(t.name), t.name))
+                                     ))
+    fig.update_layout(plot_bgcolor='white')
+
+    return fig
+
 
 @app.route('/process', methods=['POST'])
 def process():
@@ -123,14 +174,21 @@ def process():
     end_date = pd.Timestamp(request.form['endDate'], tz='UTC')
     variable = request.form['variable']
     period = request.form['period']
+    chartType = request.form['chartType']
     
     # Suburbs entered as a comma-separated string, split by commas and strip extra spaces
     suburbs = [suburb.strip() for suburb in request.form['suburbs'].split(',')]
 
     dataset = get_dataset(suburbs)
     
-    
-    fig = lineChart(dataset,variable,start_date,end_date,period,suburbs)
+    if chartType == 'lineChart':
+        fig = lineChart(dataset,variable,start_date,end_date,period,suburbs)
+    elif chartType == 'barChart':
+        fig = barChart(dataset,variable,start_date,end_date,period,suburbs)
+    elif chartType == 'histogram':
+        fig = histogram(dataset,variable,start_date,end_date,period,suburbs)
+    elif chartType == 'areaChart':
+        fig = areaChart(dataset,variable,start_date,end_date,period,suburbs)
     
     fig_html = fig.to_html(full_html=False)
 

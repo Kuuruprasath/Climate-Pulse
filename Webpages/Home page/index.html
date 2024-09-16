@@ -60,13 +60,43 @@
         <label for="location">Enter Location (latitude, longitude):</label><br>
         <input type="text" id="location" name="location" required><br>
 
-        <label for="variable">Select Variable:</label><br>
-        <select id="variable" name="variable">
-            <option value="temperature">Temperature</option>
-            <option value="rain">Rain</option>
-        </select><br>
+        <input type="submit" value="Predict the Weather">
+    </form>
 
-        <input type="submit" value="Submit">
+
+    <h1>Weather historical data</h1>
+    <form action="/process" method="POST">
+
+        <!-- Suburbs Input (Text Box) -->
+        <label for="suburbs">Suburbs (comma-separated):</label><br>
+        <input type="text" id="suburbs" name="suburbs" placeholder="Alpine, Clayton" required><br><br>
+
+        <label for="variable">Select Variable:</label><br>
+            <select id="variable" name="variable">
+                <option value="temperature">Temperature</option>
+                <option value="rainfall">Rain fall</option>
+            </select><br>
+        
+        <label for="startDate">Start Date:</label><br>
+        <input type="date" id="startDate" name="startDate" value="2015-01-01" required><br><br>
+
+        <!-- End Date Input -->
+        <label for="endDate">End Date:</label><br>
+        <input type="date" id="endDate" name="endDate" value="2024-07-31" required><br><br>
+
+        <!-- Period Input -->
+        <label for="period">Period:</label><br>
+        <input type="text" id="period" name="period" value="M" required><br><br>
+
+        <label for="chartType">Select Type of Chart:</label><br>
+            <select id="chartType" name="chartType">
+                <option value="lineChart">Line chart</option>
+                <option value="barChart">Bar chart</option>
+                <option value="histogram">Histogram</option>
+                <option value="areaChart">Area chart</option>
+            </select><br>
+
+        <input type="submit" value="Produce Chart for weather's historical data">
     </form>
 </div>
 
