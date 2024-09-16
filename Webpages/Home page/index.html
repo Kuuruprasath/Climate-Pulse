@@ -86,7 +86,12 @@
 
         <!-- Period Input -->
         <label for="period">Period:</label><br>
-        <input type="text" id="period" name="period" value="M" required><br><br>
+        <select id="period" name="period">
+            <option value="M">Monthly frequency</option>
+            <option value="Y">Yearly frequency</option>
+            <option value="Q">Quarterly frequency</option>
+            <option value="W">Weakly frequency</option>
+        </select><br>
 
         <label for="chartType">Select Type of Chart:</label><br>
             <select id="chartType" name="chartType">
