@@ -193,7 +193,7 @@ def process():
     fig_html = fig.to_html(full_html=False)
 
     # Render the figure in the template
-    return render_template('plot.html', fig_html=fig_html)
+    return render_template('plot.html', fig_html=fig_html, suburbs = suburbs, variable = variable, chartType = chartType, start_date = start_date, end_date = end_date, period = period)
 
     # Perform your data processing here
     #return f"Start Date: {start_date}, End Date: {end_date}, Variable: {variable}, Period: {period}, Suburbs: {suburbs}"
