@@ -55,18 +55,54 @@
 <!-- Form container for Climate Data Form (hidden by default) -->
 <div class="form-popup" id="climate-data-form">
     <span class="close-btn" id="close-form">&times;</span> <!-- Close button -->
-    <h1>Submit Location for Weather Prediction</h1>
+    <h1>Weather Prediction Tool</h1>
     <form action="/predict_model_API" method="post">
         <label for="location">Enter Location (latitude, longitude):</label><br>
         <input type="text" id="location" name="location" required><br>
 
+        <input type="submit" value="Predict">
+    </form>
+
+    <hr style="margin: 30px 0;">
+
+    <h1>Weather Historical Data Visualization</h1>
+    <form action="/process" method="POST">
+
+        <!-- Suburbs Input (Text Box) -->
+        <label for="suburbs">Suburbs (comma-separated):</label><br>
+        <input type="text" id="suburbs" name="suburbs" placeholder="Alpine, Clayton" required><br><br>
+
         <label for="variable">Select Variable:</label><br>
-        <select id="variable" name="variable">
-            <option value="temperature">Temperature</option>
-            <option value="rain">Rain</option>
+            <select id="variable" name="variable">
+                <option value="temperature">Temperature</option>
+                <option value="rainfall">Rain fall</option>
+            </select><br>
+        
+        <label for="startDate">Start Date:</label><br>
+        <input type="date" id="startDate" name="startDate" value="2015-01-01" required><br><br>
+
+        <!-- End Date Input -->
+        <label for="endDate">End Date:</label><br>
+        <input type="date" id="endDate" name="endDate" value="2024-07-31" required><br><br>
+
+        <!-- Period Input -->
+        <label for="period">Period:</label><br>
+        <select id="period" name="period">
+            <option value="M">Monthly frequency</option>
+            <option value="Y">Yearly frequency</option>
+            <option value="Q">Quarterly frequency</option>
+            <option value="W">Weakly frequency</option>
         </select><br>
 
-        <input type="submit" value="Submit">
+        <label for="chartType">Select Type of Chart:</label><br>
+            <select id="chartType" name="chartType">
+                <option value="lineChart">Line chart</option>
+                <option value="barChart">Bar chart</option>
+                <option value="histogram">Histogram</option>
+                <option value="areaChart">Area chart</option>
+            </select><br>
+
+        <input type="submit" value="Produce Chart">
     </form>
 </div>
 
