@@ -50,6 +50,8 @@ def suburb_to_ClusterID(suburblist):
 
     cursor.close()
     conn.close()
+
+    dataset = [x[0] for x in dataset]
     return dataset
 # print(suburb_to_ClusterID(["Alpine","Clayton"]))
 
