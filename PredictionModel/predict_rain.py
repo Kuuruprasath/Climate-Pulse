@@ -27,3 +27,6 @@ def predict_rains(ids):
         prob_dict.update({id:prob})
     
     return prob_dict
+
+def suburbs_to_rains_pred(suburblist):
+    pass

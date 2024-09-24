@@ -41,7 +41,7 @@ def predict_temp(id, years=1):
 
 def predict_temps(ids, years=1):
     """
-    Predict temperature for multiple locations
+    Predict temperature for multiple locations (cluster ids)
     
     Input: 
         ids: list of clusterid
@@ -73,6 +73,13 @@ def predict_temps(ids, years=1):
     return df
 
 def suburbs_to_temp_pred(suburblist, years=1):
+    """
+    Predict temperature for multiple locations (list of suburbs)
+
+    Input: 
+        suburblist: list of suburbs (name)
+        years: number of years for future prediction
+    """
     ids = convertt.suburb_to_ClusterID(suburblist)
     suburb_cluster = pd.DataFrame({'suburb':suburblist, 'clusterid':ids})
     df = predict_temps(ids, years)

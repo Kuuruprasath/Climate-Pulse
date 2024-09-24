@@ -76,7 +76,7 @@ def clusterID_to_variables(clusterList):
         password="Climatepulse123."
     )
     cursor = conn.cursor()
-    query = "SELECT clusterid, datetime, temperaturemean,rainsum FROM weatherdata WHERE clusterid IN %s"
+    query = "SELECT clusterid, datetime, temperaturemean,rainsum FROM weatherdata WHERE clusterid IN %s ORDER BY clusterid, datetime"
     cursor.execute(query, (clusterlist,))
     dataset = cursor.fetchall()
     clusterid = [row[0] for row in dataset]
