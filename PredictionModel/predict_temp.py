@@ -1,6 +1,10 @@
+import pandas as pd
 import pandas.io.sql as sqlio
 import psycopg2
 from datetime import datetime
+import sys
+sys.path.append('../Backend/Conversions')
+import convertt
 
 def predict_temp(id, years=1):
     """
@@ -11,7 +15,7 @@ def predict_temp(id, years=1):
         years: number of years for future prediction
     
     Output:
-        dataset: pandas dataframe containing clusterid, datetime, yhat, yhat_lower, yhat_upper
+        df: pandas dataframe containing clusterid, datetime, yhat, yhat_lower, yhat_upper
             yhat: predicted temperature value
             yhat_lower: lower bound of the predicted temperature value
             yhat_uppwer: upper bound of the predicted temperature value
@@ -29,11 +33,11 @@ def predict_temp(id, years=1):
     # cursor = conn.cursor()
     query = f"SELECT clusterid, datetime, yhat, yhat_lower, yhat_upper FROM prediction \
         WHERE clusterid='{id}' AND datetime <= '{final_year}'"
-    dataset = sqlio.read_sql_query(query, conn)
+    df = sqlio.read_sql_query(query, conn)
     # cursor.close()
     conn.close()
     
-    return dataset
+    return df
 
 def predict_temps(ids, years=1):
     """
@@ -44,7 +48,7 @@ def predict_temps(ids, years=1):
         years: number of years for future prediction
     
     Output:
-        dataset: pandas dataframe containing clusterid, datetime, yhat, yhat_lower, yhat_upper
+        df: pandas dataframe containing clusterid, datetime, yhat, yhat_lower, yhat_upper
             yhat: predicted temperature value
             yhat_lower: lower bound of the predicted temperature value
             yhat_uppwer: upper bound of the predicted temperature value
@@ -62,8 +66,16 @@ def predict_temps(ids, years=1):
     # cursor = conn.cursor()
     query = f"SELECT clusterid, datetime, yhat, yhat_lower, yhat_upper FROM prediction \
         WHERE clusterid IN {str(ids)} AND datetime <= '{final_year}'"
-    dataset = sqlio.read_sql_query(query, conn)
+    df = sqlio.read_sql_query(query, conn)
     # cursor.close()
     conn.close()
     
-    return dataset
+    return df
+
+def suburbs_to_temp_pred(suburblist, years=1):
+    ids = convertt.suburb_to_ClusterID(suburblist)
+    suburb_cluster = pd.DataFrame({'suburb':suburblist, 'clusterid':ids})
+    df = predict_temps(ids, years)
+    df = df.merge(suburb_cluster, how='left', on='clusterid')
+
+    return df
