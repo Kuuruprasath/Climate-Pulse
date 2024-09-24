@@ -1,6 +1,6 @@
 import pandas.io.sql as sqlio
 import psycopg2
-import datetime
+from datetime import datetime
 
 def predict_temp(id, years=1):
     """
