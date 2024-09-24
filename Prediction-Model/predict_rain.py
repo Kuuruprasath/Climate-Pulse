@@ -2,6 +2,8 @@ from random import randint
 
 def predict_rain(id):
     """
+    Predict the probability of raining tomorrow for one location
+    
     Input:
         id: clusterid (location)
     Output:
@@ -12,6 +14,8 @@ def predict_rain(id):
 
 def predict_rains(ids):
     """
+    Predict the probability of raining tomorrow for multiple locations
+
     Input:
         ids: list of clusterid (locations)
     Output:
