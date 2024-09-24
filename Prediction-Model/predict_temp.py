@@ -9,7 +9,7 @@ def predict_temp(id, years=1):
         years: number of years for future prediction
     
     Output:
-        dataset: dataframe containing clusterid, datetime, yhat, yhat_lower, yhat_upper
+        dataset: pandas dataframe containing clusterid, datetime, yhat, yhat_lower, yhat_upper
             yhat: predicted temperature value
             yhat_lower: lower bound of the predicted temperature value
             yhat_uppwer: upper bound of the predicted temperature value
