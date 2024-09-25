@@ -15,7 +15,7 @@ def predict_temp(id, years=1):
         years: number of years for future prediction
     
     Output:
-        df: pandas dataframe containing clusterid, datetime, yhat, yhat_lower, yhat_upper
+        df: pandas dataframe containing clusterid, datetime, temperature, temperature_low, temperature_upper
             yhat: predicted temperature value
             yhat_lower: lower bound of the predicted temperature value
             yhat_uppwer: upper bound of the predicted temperature value
@@ -31,7 +31,7 @@ def predict_temp(id, years=1):
         password="Climatepulse123."
     )
     # cursor = conn.cursor()
-    query = f"SELECT clusterid, datetime, yhat, yhat_lower, yhat_upper FROM prediction \
+    query = f"SELECT clusterid, datetime, temperature, temperature_low, temperature_upper FROM prediction \
         WHERE clusterid='{id}' AND datetime <= '{final_year}'"
     df = sqlio.read_sql_query(query, conn)
     # cursor.close()
@@ -48,7 +48,7 @@ def predict_temps(ids, years=1):
         years: number of years for future prediction
     
     Output:
-        df: pandas dataframe containing clusterid, datetime, yhat, yhat_lower, yhat_upper
+        df: pandas dataframe containing clusterid, datetime, temperature, temperature_low, temperature_upper
             yhat: predicted temperature value
             yhat_lower: lower bound of the predicted temperature value
             yhat_uppwer: upper bound of the predicted temperature value
@@ -64,7 +64,7 @@ def predict_temps(ids, years=1):
         password="Climatepulse123."
     )
     # cursor = conn.cursor()
-    query = f"SELECT clusterid, datetime, yhat, yhat_lower, yhat_upper FROM prediction \
+    query = f"SELECT clusterid, datetime, temperature, temperature_low, temperature_upper FROM prediction \
         WHERE clusterid IN {str(ids)} AND datetime <= '{final_year}'"
     df = sqlio.read_sql_query(query, conn)
     # cursor.close()
