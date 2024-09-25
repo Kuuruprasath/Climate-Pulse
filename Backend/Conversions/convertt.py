@@ -1,6 +1,8 @@
+import pandas as pd
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
 def suburb_to_lat_long(suburblist):
-    import psycopg2
     suburblist = tuple(suburblist)
     conn = psycopg2.connect(
         dbname="climatepulse",
@@ -23,7 +25,6 @@ def suburb_to_lat_long(suburblist):
 # print(suburb_to_lat_long(["Alpine","Clayton"]))
 
 def suburb_to_ClusterID(suburblist):  
-    import pandas as pd
 
     # suburbs = pd.read_csv("../Actual_datasets/SuburbClustered.csv")
     # suburbs
@@ -49,6 +50,8 @@ def suburb_to_ClusterID(suburblist):
 
     cursor.close()
     conn.close()
+
+    dataset = [x[0] for x in dataset]
     return dataset
 # print(suburb_to_ClusterID(["Alpine","Clayton"]))
 
@@ -64,7 +67,6 @@ def clusterID_to_variables(clusterList):
     # filterdf = pd.DataFrame(filter)
     # return filterdf
 
-    import psycopg2
     clusterlist = tuple(clusterList)
     conn = psycopg2.connect(
         dbname="climatepulse",
@@ -74,7 +76,7 @@ def clusterID_to_variables(clusterList):
         password="Climatepulse123."
     )
     cursor = conn.cursor()
-    query = "SELECT clusterid, datetime, temperaturemean,rainsum FROM weatherdata WHERE clusterid IN %s"
+    query = "SELECT clusterid, datetime, temperaturemean,rainsum FROM weatherdata WHERE clusterid IN %s ORDER BY clusterid, datetime"
     cursor.execute(query, (clusterlist,))
     dataset = cursor.fetchall()
     clusterid = [row[0] for row in dataset]
@@ -85,6 +87,7 @@ def clusterID_to_variables(clusterList):
     cursor.close()
     conn.close()
     return clusterid,datetime,temperature,rainfall
+
 # print(clusterID_to_variables([10849,106402]))
 def suburb_to_var(suburblist):
 
@@ -92,3 +95,56 @@ def suburb_to_var(suburblist):
     clusterid, datetime, temperature,rainfall = clusterID_to_variables(ClusterID)
     return clusterid,datetime, temperature, rainfall
 # print(suburb_to_var(["Alpine","Clayton"]))
+
+def coordinate_to_id(latitude, longitude):
+    """
+    Function to get clusterid given coordinates. Find the the cluster that is closest to the input coordinates
+
+    Input:
+        latitude:
+        longitude:
+
+    Output:
+        clusterid
+    """
+
+    # Connect to the database
+    conn = psycopg2.connect(
+    dbname="climatepulse",
+    host="postgres-1.c96iysms626t.ap-southeast-2.rds.amazonaws.com",
+    port=5432,
+    user="postgres",
+    password="Climatepulse123."
+    )
+
+    # SQL query to find the closest cluster_id using the Haversine formula
+    query = """
+    SELECT clusterid, lattitude, longtitude,
+           ST_Distance(
+               ST_SetSRID(ST_Point(longtitude, lattitude), 4326),  -- Cluster coordinates
+               ST_SetSRID(ST_Point(%s, %s), 4326)               -- Input coordinates
+           ) AS distance
+    FROM suburbclustered
+    ORDER BY distance
+    LIMIT 1;
+    """
+    
+    try:
+        # Execute the query with the provided latitude and longitude
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute(query, (longitude, latitude))  # Longitude comes first in ST_Point
+            result = cursor.fetchone()
+            
+            # Check if a result was found
+            if result:
+                cluster_id = result['clusterid']
+                return cluster_id
+            else:
+                return None  # No cluster found
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return None
+    
+    finally:
+        conn.close()
