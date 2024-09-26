@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Climate Pulse</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Paytone+One&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap'); /* Importing Fira Code font */
+
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Body styling */
+    body {
+        font-family: 'Russo One', sans-serif;
+        background-color: #000000; /* Dark background */
+        color: white; /* White text */
+        margin: 0;
+        padding: 0;
+        padding-top: 100px; /* Ensuring all elements have space from the top */
+        display: flex;
+        justify-content: center;
+        align-items: center; /* Center content */
+        min-height: 100vh;
+        text-align: left;
+        flex-direction: column;
+    }
+
+    /* Form container styling */
+    form {
+        width: 100%;
+        max-width: 700px; /* Increase max width */
+        padding: 20px;
+        margin-top: 30px; /* Adding space between form and heading */
+    }
+
+    /* Heading (Contact Us) styling */
+    h2 {
+        font-family: 'Russo One', sans-serif;
+        font-size: 3rem;
+        color: #F4D548; /* Yellow heading */
+        text-align: center;
+        margin-bottom: 10px;
+        letter-spacing: 1px; /* Spacing between letters */
+    }
+
+    /* Welcome message styling */
+    .welcome-message {
+        font-family: 'Russo One', sans-serif; /* Using Russo One font */
+        font-size: 1.5rem; /* Slightly larger font */
+        color: white;
+        text-align: center;
+        margin-bottom: 60px; /* Space between form and welcome message */
+    }
+
+    /* Label and input field styling */
+    form label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #dad8d8; /* Light gray label color */
+    }
+
+    /* Styling for input and textarea fields */
+    form input[type="text"],
+    form input[type="email"],
+    form textarea {
+        width: 100%;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        background-color: #3a3a3a; /* Dark gray background for inputs */
+        color: white; /* White text */
+        font-family: 'Fira Code', monospace; /* Using Fira Code font for inputs */
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5); /* Inset shadow for inputs */
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Styling for input fields when focused */
+    form input[type="text"]:focus,
+    form input[type="email"]:focus,
+    form textarea:focus {
+        outline: none;
+        background-color: #000000; /* Slightly lighter when focused */
+        box-shadow: 0 0 10px 2px #F4D548; /* Yellow glow when focused */
+    }
+
+    /* Textarea-specific styling */
+    form textarea {
+        resize: vertical;
+        min-height: 150px;
+    }
+
+    /* Button styling */
+    form button {
+        width: 100%;
+        padding: 14px 0;
+        background-color: #F4D548; /* Bright yellow button */
+        color: #1a1a1a; /* Dark text on button */
+        border: none;
+        border-radius: 8px;
+        font-size: 1.5rem;
+        font-family: 'Russo One', sans-serif;
+        font-weight: 500; /* Bold button text */
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    /* Button hover and active states */
+    form button:hover {
+        background-color: #F4D548; /* Lighter yellow on hover */
+        transform: translateY(-2px); /* Slight lift effect */
+    }
+
+    form button:active {
+        transform: translateY(0); /* Return to original position on click */
+    }
+
+    /* Thank you message styling */
+    .thank-you-message {
+        display: none; /* Hidden initially */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Center the message */
+        font-size: 5rem; /* Large font for thank you */
+        color: #F4D548;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    /* Paragraph within thank you message */
+    .thank-you-message p {
+        font-size: 2rem; /* Larger font for paragraph */
+        font-family: 'Russo One', sans-serif;
+        color: white;
+        margin-top: 4px;
+    }
+
+    .show-thank-you {
+        display: block;
+        font-size: 5rem;
+        text-align: center;
+        color: #F4D548;
+    }
+
+    /* Responsive design for smaller screens */
+    @media (max-width: 768px) {
+        .thank-you-message {
+            font-size: 3rem;
+        }
+
+        .thank-you-message p {
+            font-size: 1.5rem;
+        }
+    }
+
+    </style>
+</head>
+<body>
+
+<!-- Contact Us Heading -->
+<h2 id="contact-heading">Contact Us</h2>
+<!-- Welcome message below heading -->
+<p class="welcome-message">Got something on your mind?   We’re just a message away! 💬</p>
+
+<!-- Contact form -->
+<form id="contact-form">
+    <label for="first-name">First Name</label>
+    <input type="text" id="first-name" name="first-name" required>
+
+    <label for="last-name">Last Name</label>
+    <input type="text" id="last-name" name="last-name" required>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="subject">Subject</label>
+    <input type="text" id="subject" name="subject" required>
+
+    <label for="message">Message</label>
+    <textarea id="message" name="message" required></textarea>
+
+    <button type="submit">Submit</button>
+</form>
+
+<!-- Thank you message displayed after form submission -->
+<div class="thank-you-message" id="thank-you-message">
+    <p>Thanks for sharing!</p>
+    <p>Your message has landed safely in our inbox 📬. We’ll be in touch soon!</p>
+</div>
+
+<script>
+    // Get form, heading, welcome message, and thank you message elements
+    const form = document.getElementById('contact-form');
+    const thankYouMessage = document.getElementById('thank-you-message');
+    const heading = document.getElementById('contact-heading');
+    const welcomeMessage = document.querySelector('.welcome-message');
+
+    // Add event listener for form submission
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault(); // Prevent default form submission behavior
+
+        // Collect form data
+        const formData = new FormData(form);
+
+        // Send form data via AJAX request to Formspree
+        try {
+            const response = await fetch('https://formspree.io/f/mnnaeqqo', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            // If form submission is successful, hide form and display thank you message
+            if (response.ok) {
+                heading.style.display = 'none'; // Hide Contact Us heading
+                welcomeMessage.style.display = 'none'; // Hide welcome message
+                form.style.display = 'none'; // Hide the form itself
+
+                // Show the thank you message
+                thankYouMessage.style.display = 'block';
+            } else {
+                alert('Oops! There was a problem submitting your form.');
+            }
+        } catch (error) {
+            alert('Oops! There was a problem submitting your form.');
+        }
+    });
+</script>
+
+</body>
+</html>
