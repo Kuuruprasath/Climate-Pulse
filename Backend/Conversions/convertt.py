@@ -148,3 +148,26 @@ def coordinate_to_id(latitude, longitude):
     
     finally:
         conn.close()
+    
+
+# This function is for Nadzmi <3
+def suburb_info(suburblist):
+    # Get clusterid, latitude and longitude
+    suburblist = tuple(suburblist)
+    conn = psycopg2.connect(
+        dbname="climatepulse",
+        host="postgres-1.c96iysms626t.ap-southeast-2.rds.amazonaws.com",
+        port=5432,
+        user="postgres",
+        password="Climatepulse123."
+    )
+    cursor = conn.cursor()
+    query = "SELECT clusterid, lattitude, longtitude FROM suburbclustered WHERE officialnamesuburb IN %s"
+    cursor.execute(query, (suburblist,))
+    dataset = cursor.fetchall()
+    # first_column = [row[0] for row in dataset]
+    # print(dataset)
+
+    cursor.close()
+    conn.close()
+    return dataset
