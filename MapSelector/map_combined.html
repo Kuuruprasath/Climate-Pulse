@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Climate-Pulse - Analysis</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <!-- Leaflet TimeDimension CSS -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.control.min.css" />
+
+    <style>
+        #map {
+            height: 800px;
+            width: 100%;
+        }
+
+        .legend {
+            background: white;
+            padding: 6px 8px;
+            font: 14px Arial, Helvetica, sans-serif;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            line-height: 24px;
+        }
+
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+
+        .floating-window {
+            position: absolute;
+            top: 200px;
+            left: 20px;
+            z-index: 1000;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            font-family: Arial, sans-serif;
+            width: 260px;
+        }
+
+        .floating-window form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .floating-window input[type="text"] {
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .floating-window button {
+            padding: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .floating-window button:hover {
+            background-color: #0056b3;
+        }
+
+        #suburbListContainer {
+            margin-top: 5px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            min-height: 50px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: 200px;
+        }
+
+        .suburb-item {
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .suburb-item button {
+            background: none;
+            border: none;
+            margin-left: 10px;
+            color: red;
+            cursor: pointer;
+        }
+
+        #resetMap {
+            margin-top: 15px;
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+
+        #resetMap:hover {
+            background-color: #0056b3;
+        }
+
+        label[for="suburbs"] {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        #addedSuburbs {
+            margin-bottom: 5px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Floating Suburb Input Form -->
+    <div class="floating-window">
+        <form id="suburbForm">
+            <label for="suburbs">Enter Suburb Name:</label>
+            <input type="text" id="suburbs" name="suburbs" placeholder="Enter suburb here..." list="suburb-list">
+            <datalist id="suburb-list"></datalist>
+            <button type="submit">Search Suburb</button>
+        </form>
+
+        <h4 id="addedSuburbs">Added Suburbs:</h4>
+        <div id="suburbListContainer"></div> <!-- container to store list of added suburbs -->
+
+        <button id="resetMap">Clear Map</button> <!-- button to clear list of suburbs and map markers -->
+    </div>
+
+    <!-- *** Map Container *** -->
+    <div id="map"></div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Leaflet TimeDimension JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/iso8601-js-period@0.2.1/iso8601.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.min.js"></script>
+
+    <!-- jQuery Library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- *** Script for rendering map and other features *** -->
+    <script type="text/javascript" src="map_combined.js"></script>
+</body>
+
+</html>
