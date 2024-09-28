@@ -129,4 +129,4 @@ def predict_rains_daily(suburblist):
 
         df = pd.concat((df, daily_dataframe), ignore_index=True)
 
-    return dfs
+    return df
