@@ -25,8 +25,8 @@ def predict_rains(suburblist):
         prob_dict: dictionary containing clusterid and the probablity of raining tmr for that id
     """
     prob_dict = {}
-    for id in ids:
+    for suburb in suburblist:
         prob = predict_rain(id)
-        prob_dict.update({id:prob})
+        prob_dict.update({suburb:prob})
     
     return prob_dict
