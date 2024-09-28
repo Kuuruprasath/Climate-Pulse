@@ -1,6 +1,9 @@
 from random import randint
+import sys
+sys.path.append('../Backend/Conversions')
+import convertt
 
-def predict_rain(id):
+def predict_rain(suburb):
     """
     Predict the probability of raining tomorrow for one location
     
@@ -12,7 +15,7 @@ def predict_rain(id):
 
     return randint(0,100)
 
-def predict_rains(ids):
+def predict_rains(suburblist):
     """
     Predict the probability of raining tomorrow for multiple locations
 
@@ -27,6 +30,3 @@ def predict_rains(ids):
         prob_dict.update({id:prob})
     
     return prob_dict
-
-def suburbs_to_rains_pred(suburblist):
-    pass

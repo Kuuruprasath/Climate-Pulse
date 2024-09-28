@@ -6,12 +6,12 @@ import sys
 sys.path.append('../Backend/Conversions')
 import convertt
 
-def predict_temp(id, years=1):
+def predict_temp(suburb, years=1):
     """
     Predict temperature for one location (clusterid)
 
     Input: 
-        id: clusterid
+        suburb: suburb name
         years: number of years for future prediction
     
     Output:
@@ -20,7 +20,8 @@ def predict_temp(id, years=1):
             yhat_lower: lower bound of the predicted temperature value
             yhat_uppwer: upper bound of the predicted temperature value
     """
-    
+    suburb = [suburb]
+    id = convertt.suburb_to_ClusterID(suburb)[0]
     today = datetime.today()
     final_year =  today.replace(year = today.year + years).strftime('%Y-%m-%d')
     conn = psycopg2.connect(
@@ -39,21 +40,42 @@ def predict_temp(id, years=1):
     
     return df
 
-def predict_temps(ids, years=1):
+def predict_temps(suburblist, years=1):
     """
     Predict temperature for multiple locations (cluster ids)
     
     Input: 
-        ids: list of clusterid
+        suburblist: list of suburbs
         years: number of years for future prediction
     
     Output:
-        df: pandas dataframe containing clusterid, datetime, temperature, temperature_low, temperature_upper
+        df: pandas dataframe containing clusterid, datetime, temperature, temperature_low, temperature_upper, suburb
+            clusterid:
+            datetime:
             yhat: predicted temperature value
             yhat_lower: lower bound of the predicted temperature value
             yhat_uppwer: upper bound of the predicted temperature value
+            suburb:
     """
-    ids = tuple(ids) # Convert into tuple for query execution of IN
+
+    suburblist_valid = []
+    ids = []
+    for i in range(len(suburblist)):
+        id = convertt.suburb_to_ClusterID([suburblist[i]])
+        if id:
+            ids.append(id[0])
+            suburblist_valid.append(suburblist[i])
+    
+    print(suburblist_valid)
+    print(ids)
+    suburb_cluster = pd.DataFrame({'suburb':suburblist_valid, 'clusterid':ids})
+
+    # Convert ids to tuple in form of string for query
+    if len(ids) == 1:
+        ids = '(' + str(ids[0]) + ')'
+    else:
+        ids = str(tuple(ids))
+        
     today = datetime.today()
     final_year =  today.replace(year = today.year + years).strftime('%Y-%m-%d')
     conn = psycopg2.connect(
@@ -65,24 +87,12 @@ def predict_temps(ids, years=1):
     )
     # cursor = conn.cursor()
     query = f"SELECT clusterid, datetime, temperature, temperature_low, temperature_upper FROM prediction \
-        WHERE clusterid IN {str(ids)} AND datetime <= '{final_year}'"
+        WHERE clusterid IN {ids} AND datetime <= '{final_year}'"
     df = sqlio.read_sql_query(query, conn)
+    print(df)
+    df = df.merge(suburb_cluster, how='left', on='clusterid')
+
     # cursor.close()
     conn.close()
     
-    return df
-
-def suburbs_to_temp_pred(suburblist, years=1):
-    """
-    Predict temperature for multiple locations (list of suburbs)
-
-    Input: 
-        suburblist: list of suburbs (name)
-        years: number of years for future prediction
-    """
-    ids = convertt.suburb_to_ClusterID(suburblist)
-    suburb_cluster = pd.DataFrame({'suburb':suburblist, 'clusterid':ids})
-    df = predict_temps(ids, years)
-    df = df.merge(suburb_cluster, how='left', on='clusterid')
-
     return df
