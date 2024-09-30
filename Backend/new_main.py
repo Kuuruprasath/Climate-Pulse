@@ -4,11 +4,14 @@ import pandas as pd
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import os
 import plotly.express as px
+import plotly.graph_objects as go
+from plotly.offline import iplot
 from Conversions import convertt
 import psycopg2
 from flask_cors import CORS
 
 app = Flask(__name__, template_folder=os.path.abspath('../Webpages'), static_folder=os.path.abspath('../Webpages/static'))
+CORS(app)
 
 @app.route('/')
 def home():
@@ -34,10 +37,206 @@ def contact_us():
 def analysis():
     return render_template('map_combined.html')
 
+#Analysis function
+def get_dataset(suburbList):
+    import pandas as pd
+    clusterid,datetime,temperature,rainfall = convertt.suburb_to_var(suburbList)
+    dataset = {
+    'clusterid' : clusterid,
+    'datetime': datetime,
+    'temperature': temperature,
+    'rainfall': rainfall
+    }
+    dataset = pd.DataFrame(dataset)
+    return dataset
 
-#Analysis page
+def lineChart(dataset, variable, startDate, endDate, period, suburbs):
+    import plotly.express as px
+    import pandas as pd
+
+    # Ensure the datetime column is in datetime format
+    dataset["datetime"] = pd.to_datetime(dataset["datetime"])
+
+    # Directly convert timezone if the datetime is already tz-aware
+    dataset['datetime'] = dataset['datetime'].dt.tz_convert('UTC')
+    
+    # Create the date range
+    daterange = pd.date_range(startDate, endDate, freq=period)
+
+    # Filter the dataset based on the daterange
+    filtered_dataset = dataset[dataset["datetime"].isin(daterange)]
+
+    # Create the line chart using Plotly
+    fig = px.line(filtered_dataset, y=variable, x="datetime", color='clusterid')
+
+    # Map the unique values to suburb names
+    unique_values = filtered_dataset['clusterid'].unique()
+    newnames = {int(unique_values[i]): suburbs[i] for i in range(len(unique_values))}
+
+    # Update the trace names for the legend and hover labels
+    fig.for_each_trace(lambda t: t.update(name=newnames.get(int(t.name), t.name),
+                                          legendgroup=newnames.get(int(t.name), t.name),
+                                          hovertemplate=t.hovertemplate.replace(t.name, newnames.get(int(t.name), t.name))
+                                         ))
+    
+    # Update the layout
+    fig.update_layout(plot_bgcolor='white')
+    
+    return fig
+
+def barChart(dataset,variable,startDate,endDate,period,suburbs):
+
+
+    dataset["datetime"] = pd.to_datetime(dataset["datetime"])
+    dataset['datetime'] = dataset['datetime'].dt.tz_convert('UTC')
+    daterange = pd.date_range(startDate, endDate, freq=period)
+
+    filtered_dataset = dataset[dataset["datetime"].isin(daterange)]
+
+    fig = px.bar(filtered_dataset, y=variable,x = "datetime",color ='clusterid' )
+    fig.update_layout(plot_bgcolor='white')
+    return fig
+
+def histogram(dataset,variable,startDate,endDate,period,suburbs):
+
+
+    dataset["datetime"] = pd.to_datetime(dataset["datetime"])
+    dataset['datetime'] = dataset['datetime'].dt.tz_convert('UTC')
+
+    daterange = pd.date_range(startDate, endDate, freq=period)
+
+    filtered_dataset = dataset[dataset["datetime"].isin(daterange)]
+
+    fig = px.histogram(filtered_dataset,x = variable,nbins=31,color='clusterid')
+    unique_values = filtered_dataset['clusterid'].unique()
+    newnames = {int(unique_values[i]): suburbs[i] for i in range(len(unique_values))}
+
+    fig.for_each_trace(lambda t: t.update(name=newnames.get(int(t.name), t.name),
+                                      legendgroup=newnames.get(int(t.name), t.name),
+                                      hovertemplate=t.hovertemplate.replace(t.name, newnames.get(int(t.name), t.name))
+                                     ))
+    fig.update_layout(plot_bgcolor='white')
+
+    return fig
+
+def areaChart(dataset,variable,startDate,endDate,period,suburbs):
+
+
+    dataset["datetime"] = pd.to_datetime(dataset["datetime"])
+    dataset['datetime'] = dataset['datetime'].dt.tz_convert('UTC')
+    daterange = pd.date_range(startDate, endDate, freq=period)
+
+    filtered_dataset = dataset[dataset["datetime"].isin(daterange)]
+
+    fig = px.area(filtered_dataset,x = "datetime",y = variable,color = 'clusterid')
+    unique_values = filtered_dataset['clusterid'].unique()
+    newnames = {int(unique_values[i]): suburbs[i] for i in range(len(unique_values))}
+
+    fig.for_each_trace(lambda t: t.update(name=newnames.get(int(t.name), t.name),
+                                      legendgroup=newnames.get(int(t.name), t.name),
+                                      hovertemplate=t.hovertemplate.replace(t.name, newnames.get(int(t.name), t.name))
+                                     ))
+    fig.update_layout(plot_bgcolor='white')
+
+    return fig
+
+def pointChart(dataset,variable,startDate,endDate,period, suburbs):
+
+    dataset["datetime"] = pd.to_datetime(dataset["datetime"])
+    dataset['datetime'] = dataset['datetime'].dt.tz_convert('UTC')
+
+    daterange = pd.date_range(startDate, endDate, freq=period)
+
+    filtered_dataset = dataset[dataset["datetime"].isin(daterange)]
+
+    #fig = px.scatter(filtered_dataset, y=variable[0],x = variable[1])
+    fig = px.scatter(filtered_dataset, y='temperature',x = 'rainfall')
+    fig.update_layout(plot_bgcolor='white')
+    #fig.show()
+    return fig
+
+def line_bar_chart(dataset,variable, startDate, endDate, period, suburbs):
+    dataset["datetime"] = pd.to_datetime(dataset["datetime"])
+    dataset['datetime'] = dataset['datetime'].dt.tz_convert('UTC')
+
+    daterange = pd.date_range(startDate, endDate, freq=period)
+    filtered_dataset = dataset[dataset["datetime"].isin(daterange)]
+
+    trace1 = go.Scatter(
+        mode='lines+markers',
+        x=filtered_dataset['datetime'],
+        y=filtered_dataset['temperature'],
+        name="Temperature",
+        marker_color='yellow'
+    )
+
+    trace2 = go.Bar(
+        x=filtered_dataset['datetime'],
+        y=filtered_dataset['rainfall'],
+        name="Rainfall",
+        yaxis='y2',
+        marker_color= 'rgb(0,181,226)',
+        marker_line_width=1.5,
+        marker_line_color='rgb(0,181,226)',
+        opacity=0.5
+    )
+
+    data = [trace1, trace2]
+
+    layout = go.Layout(
+        title_text='Temperature and Rainfall Over Time',
+        yaxis=dict(
+            title='Temperature',
+            side='left'
+        ),
+        yaxis2=dict(
+            title='Rainfall',
+            overlaying='y',
+            side='right'
+        ),
+        plot_bgcolor='rgba(0,0,0,0)',
+
+    )
+
+    fig = go.Figure(data=data, layout=layout)
+    return fig
+
+
+
+@app.route('/process', methods=['POST'])
+def process():
+    start_date = pd.Timestamp(request.form['startDate'], tz='UTC')
+    end_date = pd.Timestamp(request.form['endDate'], tz='UTC')
+    variable = request.form['variable']
+    period = request.form['period']
+    chartType = request.form['chartType']
+    
+    # Suburbs entered as a comma-separated string, split by commas and strip extra spaces
+    suburbs = [suburb.strip() for suburb in request.form['suburbs_1'].split(',')]
+
+    dataset = get_dataset(suburbs)
+    
+    if chartType == 'lineChart':
+        fig = lineChart(dataset,variable,start_date,end_date,period,suburbs)
+    elif chartType == 'barChart':
+        fig = barChart(dataset,variable,start_date,end_date,period,suburbs)
+    elif chartType == 'histogram':
+        fig = histogram(dataset,variable,start_date,end_date,period,suburbs)
+    elif chartType == 'areaChart':
+        fig = areaChart(dataset,variable,start_date,end_date,period,suburbs)
+    elif chartType == 'pointChart':
+        fig = pointChart(dataset,variable,start_date,end_date,period,suburbs)
+    elif chartType == 'line_bar_chart':
+        fig = line_bar_chart(dataset,variable,start_date,end_date,period,suburbs)
+    fig_html = fig.to_html(full_html=False)
+
+    # Render the figure in the template
+    return render_template('plot.html', fig_html=fig_html, suburbs = suburbs, variable = variable, chartType = chartType, start_date = start_date, end_date = end_date, period = period)
+
+
+#Map in analysis page
 # Enable CORS for all routes and origins
-CORS(app)
+#CORS(app)
 
 # Database connection details
 conn = psycopg2.connect(

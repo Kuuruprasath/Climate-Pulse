@@ -128,15 +128,14 @@ body, html {
 /* New styles for the form popup */
 .form-popup {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 50;
+    left: 50;
     width: 500px;
     height: 100%;
     background-color: #f9f9f9;
     border-right: 2px solid #ddd;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-    display: none; /* Initially hidden */
     z-index: 1000;
 }
 
@@ -290,3 +289,64 @@ body {
         transform: scale(calc(100vw / 1920)); /* Scale body based on viewport width */
     }
 }
+
+/* Container positioned on the right side */
+.analysis_container {
+    position: absolute;
+    bottom: 250px; /* Distance from the top */
+    left: 30px; /* Positioning 20px from the right side */
+    z-index: 1000;
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+    width: 260px; /* Adjust width as needed */
+    max-height: 20vh; /* Maximum height for the container */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.analysis_container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.analysis_container input[type="text"],
+.analysis_container input[type="date"],
+.analysis_container select {
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px; /* Adjust font size if needed */
+    width: 100%; /* Ensure inputs take the full width */
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+.analysis_container input[type="submit"],
+.analysis_container button {
+    padding: 5px;
+    background-color: #007bff; /* Blue background for buttons */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.analysis_container input[type="submit"]:hover,
+.analysis_container button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Optional scrollbar customization */
+.analysis_container::-webkit-scrollbar {
+    width: 6px; /* Width of the scrollbar */
+}
+
+.analysis_container::-webkit-scrollbar-thumb {
+    background-color: #ccc; /* Color of the scrollbar thumb */
+    border-radius: 4px;
+}
+
+
