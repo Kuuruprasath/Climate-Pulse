@@ -275,7 +275,7 @@ function toggleLayer(layerType) {
 toggleLayer('temperature');
 
 // Buttons for toggling between rainfall and temperature
-const toggleButtons = L.control({ position: 'topright' });
+const toggleButtons = L.control({ position: 'bottomleft' });
 toggleButtons.onAdd = function () {
     const div = L.DomUtil.create('div', 'toggle-buttons');
     div.innerHTML = `
