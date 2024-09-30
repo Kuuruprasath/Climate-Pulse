@@ -457,11 +457,11 @@ function sendAddedSuburbNames() {
     .then(response => response.json())
     .then(data => {
         console.log('Success:', data); // Handle the success response
-        alert('Suburb names sent to backend successfully');
+        //alert('Suburb names sent to backend successfully');
     })
     .catch((error) => {
         console.error('Error:', error); // Handle any errors
-        alert('Failed to send suburb names to the backend');
+        //alert('Failed to send suburb names to the backend');
     });
 }
 
@@ -470,6 +470,6 @@ document.getElementById("finishSelect").addEventListener("click", function () {
     if (addedSuburbNames.length > 0) {
         sendAddedSuburbNames();
     } else {
-        alert('No suburb names to send.');
+        //alert('No suburb names to send.');
     }
 });
