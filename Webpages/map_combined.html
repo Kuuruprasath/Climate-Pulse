@@ -143,21 +143,21 @@
 
 <body>
     <!-- Floating Suburb Input Form -->
-    <div class="floating-window">
+    
+
+    <div class="analysis_container">
+        <h4>Suburb Navigation</h4>
         <form id="suburbForm">
             <label for="suburbs">Enter Suburb Name:</label>
             <input type="text" id="suburbs" name="suburbs" placeholder="Enter suburb here..." list="suburb-list">
             <datalist id="suburb-list"></datalist>
             <button type="submit">Search Suburb</button>
+            <h4 id="addedSuburbs">Added Suburbs:</h4>
+            <div id="suburbListContainer"></div> <!-- container to store list of added suburbs -->
+            <button id="resetMap">Clear Map</button> <!-- button to clear list of suburbs and map markers -->
         </form>
 
-        <h4 id="addedSuburbs">Added Suburbs:</h4>
-        <div id="suburbListContainer"></div> <!-- container to store list of added suburbs -->
 
-        <button id="resetMap">Clear Map</button> <!-- button to clear list of suburbs and map markers -->
-    </div>
-
-    <div class="analysis_container">
         <h4>Weather Trends Across Suburbs</h4>
         <form action="/process" method="POST">
             <!-- Suburbs Input (Text Box) -->

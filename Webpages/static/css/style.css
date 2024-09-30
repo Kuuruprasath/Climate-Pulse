@@ -293,7 +293,7 @@ body {
 /* Container positioned on the right side */
 .analysis_container {
     position: absolute;
-    bottom: 250px; /* Distance from the top */
+    top: 150px; /* Distance from the top */
     left: 30px; /* Positioning 20px from the right side */
     z-index: 1000;
     background-color: white;
@@ -302,7 +302,7 @@ body {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     font-family: Arial, sans-serif;
     width: 260px; /* Adjust width as needed */
-    max-height: 20vh; /* Maximum height for the container */
+    max-height: 50vh; /* Maximum height for the container */
     overflow-y: auto; /* Enable vertical scrolling */
 }
 
