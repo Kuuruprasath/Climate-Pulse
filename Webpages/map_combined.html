@@ -109,6 +109,7 @@
 
         #resetMap {
             margin-top: 15px;
+            margin-bottom: 15px;
             padding: 8px 16px;
             background-color: #007bff;
             color: white;
@@ -151,19 +152,17 @@
             <label for="suburbs">Enter Suburb Name:</label>
             <input type="text" id="suburbs" name="suburbs" placeholder="Enter suburb here..." list="suburb-list">
             <datalist id="suburb-list"></datalist>
-            <button type="submit">Search Suburb</button>
+            <button id = "submitSuburbNames" type="submit">Search Suburb</button>
             <h4 id="addedSuburbs">Added Suburbs:</h4>
             <div id="suburbListContainer"></div> <!-- container to store list of added suburbs -->
             <button id="resetMap">Clear Map</button> <!-- button to clear list of suburbs and map markers -->
+            <button id="finishSelect"> Finalise the selection</button> 
         </form>
 
+        
 
         <h4>Weather Trends Across Suburbs</h4>
         <form action="/process" method="POST">
-            <!-- Suburbs Input (Text Box) -->
-            <label for="suburbs">Suburbs (comma-separated):</label><br>
-            <input type="text" id="suburbs" name="suburbs_1" placeholder="Alpine, Clayton" required><br><br>
-
             <label for="variable">Select Variable:</label><br>
                 <select id="variable" name="variable">
                     <option value="temperature">Temperature</option>
@@ -199,23 +198,18 @@
             <input type="submit" value="Produce Chart">
         </form>
 
-    </div>
-
-
-    <div class="prediction_container">
         <h4>Weather Prediction Across Suburbs</h4>
         <form action="/predict" method="POST">
-            <!-- Suburbs Input (Text Box) -->
-            <label for="suburbs">Suburbs (comma-separated):</label><br>
-            <input type="text" id="suburbs" name="suburbs_2" placeholder="Alpine, Clayton" required><br><br>
-            <label for="variable">Select Variable:</label><br>
+            <label for="variable">Prediction Options:</label><br>
                 <select id="variable" name="variable">
                     <option value="temperature">Temperature ( 1 Year prediction )</option>
                     <option value="rainfall">Rainfall ( Daily prediction )</option>
                 </select><br>
             <input type="submit" value="Prediction">
         </form>
+
     </div>
+
 
 
 

@@ -443,3 +443,33 @@ document.getElementById("resetMap").addEventListener("click", function () {
     addedSuburbNames = [];
     document.getElementById("suburbListContainer").innerHTML = '';
 });
+
+
+// Function to send addedSuburbNames to the Flask backend
+function sendAddedSuburbNames() {
+    fetch('/process_suburb', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ suburbs: addedSuburbNames }), // Send the addedSuburbNames array
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data); // Handle the success response
+        alert('Suburb names sent to backend successfully');
+    })
+    .catch((error) => {
+        console.error('Error:', error); // Handle any errors
+        alert('Failed to send suburb names to the backend');
+    });
+}
+
+// Example: Call this function when a button is clicked
+document.getElementById("finishSelect").addEventListener("click", function () {
+    if (addedSuburbNames.length > 0) {
+        sendAddedSuburbNames();
+    } else {
+        alert('No suburb names to send.');
+    }
+});

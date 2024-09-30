@@ -206,6 +206,16 @@ def line_bar_chart(dataset,variable, startDate, endDate, period, suburbs):
     return fig
 
 
+global_suburbs = []
+
+@app.route('/process_suburb', methods=['POST'])
+def get_suburbs():
+    global global_suburbs  # Declare it as global to modify it
+    data = request.get_json()
+    if 'suburbs' in data:
+        global_suburbs = data['suburbs']  # Update the global variable
+        return jsonify({'message': 'Suburbs stored successfully', 'suburbs': global_suburbs}), 200
+    return jsonify({'error': 'No suburbs provided'}), 400
 
 @app.route('/process', methods=['POST'])
 def process():
@@ -216,7 +226,12 @@ def process():
     chartType = request.form['chartType']
     
     # Suburbs entered as a comma-separated string, split by commas and strip extra spaces
-    suburbs = [suburb.strip() for suburb in request.form['suburbs_1'].split(',')]
+    #suburbs = [suburb.strip() for suburb in request.form['suburbs'].split(',')]
+    global global_suburbs  # Declare it as global to access it
+    if not global_suburbs:
+        return jsonify({'error': 'No suburbs available in global variable'}), 400
+    
+    suburbs = global_suburbs
 
     dataset = get_dataset(suburbs)
     
@@ -394,21 +409,42 @@ def predict_rains_daily(suburblist):
 
 @app.route('/predict', methods=['POST'])
 def prediction():
-    #period = request.form['period']
-    variable = request.form['variable']
-    suburbs = [suburb.strip() for suburb in request.form['suburbs_2'].split(',')]
-    if variable == 'rainfall':
-        df = predict_rains_daily(suburbs)
+    try:
+        # Attempt to retrieve the 'variable' and 'suburbs' data
+        variable = request.form['variable']
+        global global_suburbs  # Declare it as global to access it
+        
+        suburbs = global_suburbs
+        
+        if not suburbs:
+            return jsonify({'error': 'No suburbs selected'}), 400
+
+        # Handling prediction logic based on the variable
+        if variable == 'rainfall':
+            df = predict_rains_daily(suburbs)
+            df_html = df.to_html(classes='table table-striped', index=False)
+            return render_template('temp_predict.html', table=df_html, variable=variable, suburbs=suburbs)
+        
+        if len(suburbs) == 1:
+            df = predict_temp(suburbs[0], 1)
+        else:
+            df = predict_temps(suburbs, 1)
+
+        # Convert DataFrame to HTML
         df_html = df.to_html(classes='table table-striped', index=False)
         return render_template('temp_predict.html', table=df_html, variable=variable, suburbs=suburbs)
-    if len(suburbs) == 1:
-        df = predict_temp(suburbs[0],1)
-    else:
-        df = predict_temps(suburbs,1)
-    #df = predict_temps(suburbs,1)
-    df_html = df.to_html(classes='table table-striped', index=False)
-    # Render the template and pass the DataFrame HTML
-    return render_template('temp_predict.html', table=df_html, variable=variable, suburbs=suburbs)
+    
+    except KeyError as e:
+        # Handle missing form data
+        return jsonify({'error': f'Missing required form field: {str(e)}'}), 400
+    
+    except ValueError as e:
+        # Handle invalid data
+        return jsonify({'error': f'Invalid data: {str(e)}'}), 400
+    
+    except Exception as e:
+        # General catch-all for any other exceptions
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
 
 #Map in analysis page
