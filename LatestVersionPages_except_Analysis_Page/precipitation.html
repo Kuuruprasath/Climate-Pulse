@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MapTiler Weather + Geocoding</title>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v2.2.2/maptiler-sdk.umd.js"></script>
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v2.2.2/maptiler-sdk.css" rel="stylesheet" />
+  <script src="https://cdn.maptiler.com/maptiler-weather/v2.0.0/maptiler-weather.umd.min.js"></script>
+  <script src="https://cdn.maptiler.com/maptiler-geocoding-control/v1.3.3/maptilersdk.umd.js"></script>
+  <link href="https://cdn.maptiler.com/maptiler-geocoding-control/v1.3.3/style.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+
+    #time-info {
+      position: fixed;
+      width: 60vw;
+      bottom: 0;
+      z-index: 1;
+      margin: 10px;
+      text-shadow: 0px 0px 5px black;
+      color: white;
+      font-size: 20px;
+      font-weight: 500;
+      text-align: center;
+      left: 0;
+      right: 0;
+      margin: auto;
+      padding: 20px;
+    }
+
+    #time-slider {
+      width: 100%;
+      height: fit-content;
+      left: 0;
+      right: 0;
+      z-index: 1;
+      filter: drop-shadow(0 0 7px #000a);
+      margin-top: 10px;
+    }
+
+    #pointer-data {
+      z-index: 1;
+      position: fixed;
+      font-size: 30px;
+      font-weight: 900;
+      margin: 27px 0px 0px 10px;
+      color: #fff;
+      text-shadow: 0px 0px 10px #0007;
+      top: 180px; 
+    }
+
+    #variable-name {
+      z-index: 1;
+      position: fixed;
+      font-size: 25px; 
+      font-weight: bold; 
+      margin: 5px 0px 0px 10px;
+      color: #fff;
+      text-shadow: 0px 0px 10px #0007;
+      top: 150px; 
+    }
+
+    .button {
+      cursor: pointer;
+      width: auto;
+      padding: 8px;
+      border-radius: 3px;
+      margin: 10px 0 0 0;
+      font-size: 12px;
+      text-align: center;
+      color: #fff;
+      background: #3174ff;
+      font-family: sans-serif;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="time-info">
+    <span id="time-text"></span>
+    <button id="play-pause-bt" class="button">Play 3600x</button>
+    <input type="range" id="time-slider" min="0" max="11" step="1">
+  </div>
+
+  <div id="variable-name">Precipitation + Wind</div>
+  <div id="pointer-data"></div>
+  <div id="map"></div>
+
+  <script>
+    maptilersdk.config.apiKey = "E4a8SUjGeLYpKsZvu7tx";
+    
+    // Set bounds for Australia (SW and NE corners of the bounding box)
+    const australiaBounds = [[100.0, -50.0], [170.0, 0.0]];
+
+    // Initialize the map with the custom style and controls
+    const map = new maptilersdk.Map({
+      container: "map", // container id
+      style: "https://api.maptiler.com/maps/f320abfe-4945-4ae1-9fdb-4588fc1cdbf4/style.json?key=E4a8SUjGeLYpKsZvu7tx",
+      center: [133.7751, -25.2744],// Australia center
+      zoom: 1,
+      terrainControl: false,
+      scaleControl: true,
+      geolocateControl: "bottom-right",
+      navigationControl: "bottom-right",
+      maxBounds: australiaBounds, 
+      dragPan:true
+    });
+
+    // Ensure drag functionality is enabled
+    map.dragPan.enable();
+
+    // Add Geocoding Control
+    const geocoder = new maptilersdkMaptilerGeocoder.GeocodingControl({
+      country: ["AU"] // Geocoding limited to Australia
+    });
+    map.addControl(geocoder, "bottom-left");
+
+    // Initialize weather layers (wind + temperature)
+    const layerBg = new maptilerweather.PrecipitationLayer({
+      opacity: 1,
+      smooth:true,
+      colorramp: maptilerweather.ColorRamp.builtin.PRECIPITATION_2.scale(0,5),
+    });
+
+    const layer = new maptilerweather.WindLayer({
+      id: "Wind Particles",
+      colorramp: maptilerweather.ColorRamp.builtin.NULL,
+      speed: 0.002,
+      fadeFactor: 0.05,
+      maxAmount: 256,
+      density: 200,
+      color: [0, 0, 0, 30],
+      fastColor: [0, 0, 0, 100],
+    });
+
+    // Add the wind and temperature layers to the map
+    map.on('load', function () {
+      // Adjust water color for visibility
+      map.setPaintProperty("Water", 'fill-color', "rgba(0, 0, 0, 0.6)");
+
+      map.addLayer(layerBg, "Water");
+      map.addLayer(layer);
+    });
+
+    // Time slider functionality to control animation time
+    const timeSlider = document.getElementById("time-slider");
+    timeSlider.addEventListener("input", (evt) => {
+      layer.setAnimationTime(parseInt(timeSlider.value / 1000));
+      layerBg.setAnimationTime(parseInt(timeSlider.value / 1000));
+    });
+
+    // Event handling for source ready, ticks, and time set
+    layer.on("sourceReady", event => {
+      const startDate = layer.getAnimationStartDate();
+      const endDate = layer.getAnimationEndDate();
+      const currentDate = layer.getAnimationTimeDate();
+      refreshTime();
+
+      timeSlider.min = +startDate;
+      timeSlider.max = +endDate;
+      timeSlider.value = +currentDate;
+    });
+
+    layer.on("tick", event => {
+      refreshTime();
+      updatePointerValue(pointerLngLat);
+    });
+
+    layer.on("animationTimeSet", event => {
+      refreshTime();
+    });
+
+    // Play/Pause functionality for animation
+    const playPauseButton = document.getElementById("play-pause-bt");
+    let isPlaying = false;
+    playPauseButton.addEventListener("click", () => {
+      if (isPlaying) {
+        layer.animateByFactor(0);
+        layerBg.animateByFactor(0);
+        playPauseButton.innerText = "Play 3600x";
+      } else {
+        layer.animateByFactor(3600);
+        layerBg.animateByFactor(3600);
+        playPauseButton.innerText = "Pause";
+      }
+      isPlaying = !isPlaying;
+    });
+
+    // Update the time text based on the layer animation
+    const timeTextDiv = document.getElementById("time-text");
+    function refreshTime() {
+      const d = layer.getAnimationTimeDate();
+      timeTextDiv.innerText = d.toString();
+      timeSlider.value = +d;
+    }
+
+    // Update wind and temperature data on mouse move
+    const pointerDataDiv = document.getElementById("pointer-data");
+    let pointerLngLat = null;
+    function updatePointerValue(lngLat) {
+      if (!lngLat) return;
+      pointerLngLat = lngLat;
+      const valueWind = layer.pickAt(lngLat.lng, lngLat.lat);
+      const valueRainfall = layerBg.pickAt(lngLat.lng, lngLat.lat);
+      if (!valueWind) {
+        pointerDataDiv.innerText = "";
+        return;
+      }
+      pointerDataDiv.innerText = `${valueRainfall.value.toFixed(1)}mm \n ${valueWind.speedKilometersPerHour.toFixed(1)} km/h`;
+    }
+
+    map.on('mousemove', (e) => {
+      updatePointerValue(e.lngLat);
+    });
+
+  </script>
+</body>
+</html>
