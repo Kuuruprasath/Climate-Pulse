@@ -11,6 +11,8 @@ import pandas.io.sql as sqlio
 import psycopg2
 from datetime import datetime
 from flask_cors import CORS
+import openmeteo_requests
+from random import randint
 
 app = Flask(__name__, template_folder=os.path.abspath('../Webpages'), static_folder=os.path.abspath('../Webpages/static'))
 CORS(app)
@@ -234,6 +236,179 @@ def process():
 
     # Render the figure in the template
     return render_template('plot.html', fig_html=fig_html, suburbs = suburbs, variable = variable, chartType = chartType, start_date = start_date, end_date = end_date, period = period)
+
+
+
+#Prediction Models
+def predict_temp(suburb, years=1):
+    """
+    Predict temperature for one location (clusterid)
+
+    Input: 
+        suburb: suburb name
+        years: number of years for future prediction
+    
+    Output:
+        df: pandas dataframe containing clusterid, datetime, temperature, temperature_low, temperature_upper
+            yhat: predicted temperature value
+            yhat_lower: lower bound of the predicted temperature value
+            yhat_uppwer: upper bound of the predicted temperature value
+    """
+    suburb = [suburb]
+    id = convertt.suburb_to_ClusterID(suburb)[0]
+    today = datetime.today()
+    final_year =  today.replace(year = today.year + years).strftime('%Y-%m-%d')
+    conn = psycopg2.connect(
+        dbname="climatepulse",
+        host="postgres-1.c96iysms626t.ap-southeast-2.rds.amazonaws.com",
+        port=5432,
+        user="postgres",
+        password="Climatepulse123."
+    )
+    # cursor = conn.cursor()
+    query = f"SELECT clusterid, datetime, temperature, temperature_low, temperature_upper FROM prediction \
+        WHERE clusterid='{id}' AND datetime <= '{final_year}'"
+    df = sqlio.read_sql_query(query, conn)
+    # cursor.close()
+    conn.close()
+    
+    return df
+def predict_temps(suburblist, years=1):
+    """
+    Predict temperature for multiple locations (cluster ids)
+    
+    Input: 
+        suburblist: list of suburbs
+        years: number of years for future prediction
+    
+    Output:
+        df: pandas dataframe containing clusterid, datetime, temperature, temperature_low, temperature_upper, suburb
+            clusterid:
+            datetime:
+            yhat: predicted temperature value
+            yhat_lower: lower bound of the predicted temperature value
+            yhat_uppwer: upper bound of the predicted temperature value
+            suburb:
+    """
+
+    suburblist_valid = []
+    ids = []
+    for i in range(len(suburblist)):
+        id = convertt.suburb_to_ClusterID([suburblist[i]])
+        if id:
+            ids.append(id[0])
+            suburblist_valid.append(suburblist[i])
+    
+    #print(suburblist_valid)
+    #print(ids)
+    suburb_cluster = pd.DataFrame({'suburb':suburblist_valid, 'clusterid':ids})
+
+    # Convert ids to tuple in form of string for query
+    if len(ids) == 1:
+        ids = '(' + str(ids[0]) + ')'
+    else:
+        ids = str(tuple(ids))
+        
+    today = datetime.today()
+    final_year =  today.replace(year = today.year + years).strftime('%Y-%m-%d')
+    conn = psycopg2.connect(
+        dbname="climatepulse",
+        host="postgres-1.c96iysms626t.ap-southeast-2.rds.amazonaws.com",
+        port=5432,
+        user="postgres",
+        password="Climatepulse123."
+    )
+    # cursor = conn.cursor()
+    query = f"SELECT clusterid, datetime, temperature, temperature_low, temperature_upper FROM prediction \
+        WHERE clusterid IN {ids} AND datetime <= '{final_year}'"
+    df = sqlio.read_sql_query(query, conn)
+    #print(df)
+    df = df.merge(suburb_cluster, how='left', on='clusterid')
+
+    # cursor.close()
+    conn.close()
+    
+    return df
+
+def predict_rains_daily(suburblist):
+    """
+    Predict the probability of raining today + tomorrow for multiple locations
+
+    Input:
+        suburblist: list of suburbs. e.g. ['Melbourne', 'Clayton'] or ['Melbourne'] for single location
+    Output:
+        prob_dict: dictionary containing clusterid and the probablity of raining tmr for that id
+    """
+    suburblist_valid = []
+    ids = []
+    latitude = []
+    longitude = []
+    for i in range(len(suburblist)):
+        r = convertt.suburb_info([suburblist[i]])
+        if r:
+            suburblist_valid.append(suburblist[i])
+            t = r[0] # Tuple
+            ids.append(t[0])
+            latitude.append(t[1])
+            longitude.append(t[2])
+
+    suburb_cluster = pd.DataFrame({'suburb':suburblist_valid, 'clusterid':ids,
+                               'latitude':latitude, 'longitude':longitude})
+    
+    # Setup the Open-Meteo API client with cache and retry on error
+    cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
+    retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
+    openmeteo = openmeteo_requests.Client(session = retry_session)
+
+    # Make sure all required weather variables are listed here
+    # The order of variables in hourly or daily is important to assign them correctly below
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {
+        "latitude": suburb_cluster.latitude,
+        "longitude": suburb_cluster.longitude,
+        "daily": "precipitation_probability_max",
+        "forecast_days": 2
+    }
+    responses = openmeteo.weather_api(url, params=params)
+
+    df = pd.DataFrame({"suburb":[], "datetime":[], "rain_probability":[]})
+    for i in range(len(responses)):
+        response = responses[i]
+        daily = response.Daily()
+        daily_precipitation_probability = daily.Variables(0).ValuesAsNumpy()
+
+        daily_data = {
+            "suburb": suburb_cluster.iloc[i]['suburb'],
+            "datetime": pd.date_range(
+            start = pd.to_datetime(daily.Time(), unit = "s", utc = True),
+            end = pd.to_datetime(daily.TimeEnd(), unit = "s", utc = True),
+            freq = pd.Timedelta(seconds = daily.Interval()),
+            inclusive = "left"
+        )}
+        daily_data["rain_probability"] = daily_precipitation_probability
+        daily_dataframe = pd.DataFrame(data = daily_data)
+
+        df = pd.concat((df, daily_dataframe), ignore_index=True)
+
+    return df
+
+@app.route('/predict', methods=['POST'])
+def prediction():
+    #period = request.form['period']
+    variable = request.form['variable']
+    suburbs = [suburb.strip() for suburb in request.form['suburbs_2'].split(',')]
+    if variable == 'rainfall':
+        df = predict_rains_daily(suburbs)
+        df_html = df.to_html(classes='table table-striped', index=False)
+        return render_template('temp_predict.html', table=df_html, variable=variable, suburbs=suburbs)
+    if len(suburbs) == 1:
+        df = predict_temp(suburbs[0],1)
+    else:
+        df = predict_temps(suburbs,1)
+    #df = predict_temps(suburbs,1)
+    df_html = df.to_html(classes='table table-striped', index=False)
+    # Render the template and pass the DataFrame HTML
+    return render_template('temp_predict.html', table=df_html, variable=variable, suburbs=suburbs)
 
 
 #Map in analysis page

@@ -198,6 +198,23 @@
                 </select><br>
             <input type="submit" value="Produce Chart">
         </form>
+
+    </div>
+
+
+    <div class="prediction_container">
+        <h4>Weather Prediction Across Suburbs</h4>
+        <form action="/predict" method="POST">
+            <!-- Suburbs Input (Text Box) -->
+            <label for="suburbs">Suburbs (comma-separated):</label><br>
+            <input type="text" id="suburbs" name="suburbs_2" placeholder="Alpine, Clayton" required><br><br>
+            <label for="variable">Select Variable:</label><br>
+                <select id="variable" name="variable">
+                    <option value="temperature">Temperature ( 1 Year prediction )</option>
+                    <option value="rainfall">Rainfall ( Daily prediction )</option>
+                </select><br>
+            <input type="submit" value="Prediction">
+        </form>
     </div>
 
 
