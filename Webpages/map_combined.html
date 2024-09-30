@@ -9,6 +9,8 @@
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+
 
     <!-- Leaflet TimeDimension CSS -->
     <link rel="stylesheet"
@@ -39,7 +41,7 @@
 
         .floating-window {
             position: absolute;
-            top: 200px;
+            top: 150px;
             left: 20px;
             z-index: 1000;
             background-color: white;
@@ -141,19 +143,82 @@
 
 <body>
     <!-- Floating Suburb Input Form -->
-    <div class="floating-window">
+    
+
+    <div class="analysis_container">
+        <h4>Suburb Navigation</h4>
         <form id="suburbForm">
             <label for="suburbs">Enter Suburb Name:</label>
             <input type="text" id="suburbs" name="suburbs" placeholder="Enter suburb here..." list="suburb-list">
             <datalist id="suburb-list"></datalist>
             <button type="submit">Search Suburb</button>
+            <h4 id="addedSuburbs">Added Suburbs:</h4>
+            <div id="suburbListContainer"></div> <!-- container to store list of added suburbs -->
+            <button id="resetMap">Clear Map</button> <!-- button to clear list of suburbs and map markers -->
         </form>
 
-        <h4 id="addedSuburbs">Added Suburbs:</h4>
-        <div id="suburbListContainer"></div> <!-- container to store list of added suburbs -->
 
-        <button id="resetMap">Clear Map</button> <!-- button to clear list of suburbs and map markers -->
+        <h4>Weather Trends Across Suburbs</h4>
+        <form action="/process" method="POST">
+            <!-- Suburbs Input (Text Box) -->
+            <label for="suburbs">Suburbs (comma-separated):</label><br>
+            <input type="text" id="suburbs" name="suburbs_1" placeholder="Alpine, Clayton" required><br><br>
+
+            <label for="variable">Select Variable:</label><br>
+                <select id="variable" name="variable">
+                    <option value="temperature">Temperature</option>
+                    <option value="rainfall">Rainfall</option>
+                    <option value="temperature, rainfall">Temperature and Rainfall</option>
+                </select><br>
+            
+            <label for="startDate">Start Date:</label><br>
+            <input type="date" id="startDate" name="startDate" value="2015-01-01" required><br><br>
+
+            <!-- End Date Input -->
+            <label for="endDate">End Date:</label><br>
+            <input type="date" id="endDate" name="endDate" value="2024-07-31" required><br><br>
+
+            <!-- Period Input -->
+            <label for="period">Period:</label><br>
+            <select id="period" name="period">
+                <option value="M">Monthly frequency</option>
+                <option value="Y">Yearly frequency</option>
+                <option value="Q">Quarterly frequency</option>
+                <option value="W">Weakly frequency</option>
+            </select><br>
+
+            <label for="chartType">Type of Chart:</label><br>
+                <select id="chartType" name="chartType">
+                    <option value="lineChart">Line chart</option>
+                    <option value="barChart">Bar chart</option>
+                    <option value="histogram">Histogram</option>
+                    <option value="areaChart">Area chart</option>
+                    <option value="pointChart">Point chart</option>
+                    <option value="line_bar_chart">Combination chart</option>
+                </select><br>
+            <input type="submit" value="Produce Chart">
+        </form>
+
     </div>
+
+
+    <div class="prediction_container">
+        <h4>Weather Prediction Across Suburbs</h4>
+        <form action="/predict" method="POST">
+            <!-- Suburbs Input (Text Box) -->
+            <label for="suburbs">Suburbs (comma-separated):</label><br>
+            <input type="text" id="suburbs" name="suburbs_2" placeholder="Alpine, Clayton" required><br><br>
+            <label for="variable">Select Variable:</label><br>
+                <select id="variable" name="variable">
+                    <option value="temperature">Temperature ( 1 Year prediction )</option>
+                    <option value="rainfall">Rainfall ( Daily prediction )</option>
+                </select><br>
+            <input type="submit" value="Prediction">
+        </form>
+    </div>
+
+
+
 
     <!-- *** Map Container *** -->
     <div id="map"></div>
@@ -169,7 +234,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- *** Script for rendering map and other features *** -->
-    <script type="text/javascript" src="map_combined.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='map_combined.js') }}"></script>
 </body>
 
 </html>

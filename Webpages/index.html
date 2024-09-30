@@ -4,23 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Climate Pulse</title>
-    <<link rel="stylesheet" type="text/css" href="style.css">
-
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Paytone+One&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
 
+    /* Styling for the map container */
     .map-container iframe {
         width: 100%;
         height: 100vh;
         border: none;
     }
 
+    /* Dropdown menu styling */
     .dropdown {
         position: relative;
         display: inline-block;
     }
 
+    /* Styling for the dropdown content */
     .dropdown-content {
         display: none;
         position: absolute;
@@ -31,7 +34,7 @@
     }
 
     .dropdown-content a {
-        color: white; 
+        color: white; /* Default text color */
         background-color: black; 
         padding: 12px 16px;
         text-decoration: none;
@@ -39,32 +42,36 @@
         transition: background-color 0.3s, color 0.3s; 
     }
 
-    .dropdown-content a:hover, .dropdown-content a:active {
-        color: yellow; 
+    /* Hover effect for dropdown links */
+    .dropdown-content a:hover {
+        color: #F4D548; 
         background-color: black; 
     }
 
+    /* Show the dropdown content when hovered */
     .dropdown:hover .dropdown-content {
         display: block;
     }
 
+    /* Navigation item default styling */
     .nav-item {
-        color: white;
+        color: white; /* Default color */
         padding: 12px 16px;
         text-decoration: none;
         display: inline-block;
         transition: color 0.3s;
     }
 
-    .nav-item:hover, .nav-item.active {
-        color: yellow; 
+    /* Change color on hover */
+    .nav-item:hover {
+        color: #F4D548; /* Yellow on hover */
     }
     </style>
 </head>
 <body>
 
 <div class="map-container">
-    <iframe id="map-layer" src="temperature-wind.html"></iframe> <!-- Default loading: temperature-wind.html -->
+    <iframe id="map-layer" src="{{ url_for('temperature') }}"></iframe> <!-- Default loading: temperature-wind.html -->
 </div>
 
 <div class="header-container">
@@ -76,7 +83,7 @@
                 <a href="#" id="rainfall-btn">Precipitation</a>
             </div>
         </div>
-        <a href="#" class="nav-item" style="margin-right: 100px;">Analysis</a>
+        <a href="#" class="nav-item" style="margin-right: 100px;" id="analysis-link">Analysis</a>
         <div class="yellow-semi-circle">
             <!-- SVG for curved text -->
             <svg width="240" height="120">
@@ -88,11 +95,11 @@
                 </text>
             </svg>
             <div class="logo">
-                <img src="images/ClimatePulse_logo.png" alt="Logo">
+                <img src="{{ url_for('static', filename='images/ClimatePulse_logo.png') }}" alt="Logo">
             </div>
         </div>
-        <a href="#" class="nav-item" style="margin-left: 100px;">User Guide</a>
-        <a href="#" class="nav-item">Contact Us</a>
+        <a href="#" class="nav-item" style="margin-left: 100px;" id="about-us-link">About Us</a>
+        <a href="#" class="nav-item" id="contact-us-link">Contact Us</a>
     </div>
 </div>
 
@@ -104,24 +111,37 @@
 <script>
     const rainfallBtn = document.getElementById('rainfall-btn');
     const temperatureBtn = document.getElementById('temperature-btn');
+    const aboutUsLink = document.getElementById('about-us-link');
+    const contactUsLink = document.getElementById('contact-us-link');
+    const analysisLink = document.getElementById('analysis-link');
     const mapLayer = document.getElementById('map-layer');
-    const homeLink = document.getElementById('home-link');
 
-    // Click Homelink to turn the works to yellow
-    homeLink.addEventListener('click', (e) => {
+    // Click event for Precipitation (rainfall) button
+    rainfallBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        homeLink.classList.add('active');
+        mapLayer.src = "{{ url_for('precipitation') }}"; // Load precipitation map layer
+    });
+    
+    temperatureBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        mapLayer.src = "{{ url_for('temperature') }}"; // Load temperature map layer
+    });
+    
+    aboutUsLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        mapLayer.src = "{{ url_for('about_us') }}"; // Load the About Us page
+    });
+    
+    contactUsLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        mapLayer.src = "{{ url_for('contact_us') }}"; // Load the contact us page
     });
 
-    // precipitation.html
-    rainfallBtn.addEventListener('click', () => {
-        mapLayer.src = 'precipitation.html';
+    analysisLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        mapLayer.src = "{{ url_for('analysis') }}"; // Load the contact us page
     });
 
-    // temperature-wind.html
-    temperatureBtn.addEventListener('click', () => {
-        mapLayer.src = 'temperature-wind.html';
-    });
 </script>
 
 </body>

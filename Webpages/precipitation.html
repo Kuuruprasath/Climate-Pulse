@@ -59,7 +59,7 @@
       margin: 27px 0px 0px 10px;
       color: #fff;
       text-shadow: 0px 0px 10px #0007;
-      top: 180px;
+      top: 180px; 
     }
 
     #variable-name {
@@ -96,7 +96,7 @@
     <input type="range" id="time-slider" min="0" max="11" step="1">
   </div>
 
-  <div id="variable-name">Temperature + Wind</div>
+  <div id="variable-name">Precipitation + Wind</div>
   <div id="pointer-data"></div>
   <div id="map"></div>
 
@@ -130,18 +130,19 @@
     map.addControl(geocoder, "bottom-left");
 
     // Initialize weather layers (wind + temperature)
-    const layerBg = new maptilerweather.TemperatureLayer({
+    const layerBg = new maptilerweather.PrecipitationLayer({
       opacity: 1,
-      colorramp: maptilerweather.ColorRamp.builtin.TEMPERATURE_2.scale(-15, 35),
+      smooth:true,
+      colorramp: maptilerweather.ColorRamp.builtin.PRECIPITATION_2.scale(0,5),
     });
 
     const layer = new maptilerweather.WindLayer({
       id: "Wind Particles",
       colorramp: maptilerweather.ColorRamp.builtin.NULL,
-      speed: 0.001,
+      speed: 0.002,
       fadeFactor: 0.05,
       maxAmount: 256,
-      density: 100,
+      density: 200,
       color: [0, 0, 0, 30],
       fastColor: [0, 0, 0, 100],
     });
@@ -214,12 +215,12 @@
       if (!lngLat) return;
       pointerLngLat = lngLat;
       const valueWind = layer.pickAt(lngLat.lng, lngLat.lat);
-      const valueTemp = layerBg.pickAt(lngLat.lng, lngLat.lat);
+      const valueRainfall = layerBg.pickAt(lngLat.lng, lngLat.lat);
       if (!valueWind) {
         pointerDataDiv.innerText = "";
         return;
       }
-      pointerDataDiv.innerText = `${valueTemp.value.toFixed(1)}°C \n ${valueWind.speedKilometersPerHour.toFixed(1)} km/h`;
+      pointerDataDiv.innerText = `${valueRainfall.value.toFixed(1)}mm \n ${valueWind.speedKilometersPerHour.toFixed(1)} km/h`;
     }
 
     map.on('mousemove', (e) => {

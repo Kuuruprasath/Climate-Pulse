@@ -2,7 +2,7 @@ import openmeteo_requests
 from retry_requests import retry
 import requests_cache
 import pandas as pd
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import os
 
 import plotly.express as px
@@ -13,6 +13,11 @@ app = Flask(__name__, template_folder=os.path.abspath('../Webpages'), static_fol
 
 # This will store submitted data for demonstration purposes
 submitted_data = []
+
+@app.route('/')
+def index():
+    # Redirect the root URL to /home
+    return redirect(url_for('home'))
 
 @app.route("/home", methods=['GET'])
 def home():

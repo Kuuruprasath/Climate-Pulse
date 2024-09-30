@@ -128,15 +128,14 @@ body, html {
 /* New styles for the form popup */
 .form-popup {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 50;
+    left: 50;
     width: 500px;
     height: 100%;
     background-color: #f9f9f9;
     border-right: 2px solid #ddd;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-    display: none; /* Initially hidden */
     z-index: 1000;
 }
 
@@ -175,8 +174,6 @@ body, html {
 .form-popup input[type="submit"]:hover {
     background-color: #45a049;
 }
-
-
 
 
 /* Right panel icons */
@@ -292,3 +289,123 @@ body {
         transform: scale(calc(100vw / 1920)); /* Scale body based on viewport width */
     }
 }
+
+/* Container positioned on the left side */
+.analysis_container {
+    position: absolute;
+    top: 150px; /* Distance from the top */
+    left: 30px; /* Positioning 20px from the right side */
+    z-index: 1000;
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+    width: 260px; /* Adjust width as needed */
+    max-height: 50vh; /* Maximum height for the container */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.analysis_container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.analysis_container input[type="text"],
+.analysis_container input[type="date"],
+.analysis_container select {
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px; /* Adjust font size if needed */
+    width: 100%; /* Ensure inputs take the full width */
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+.analysis_container input[type="submit"],
+.analysis_container button {
+    padding: 5px;
+    background-color: #007bff; /* Blue background for buttons */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.analysis_container input[type="submit"]:hover,
+.analysis_container button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Optional scrollbar customization */
+.analysis_container::-webkit-scrollbar {
+    width: 6px; /* Width of the scrollbar */
+}
+
+.analysis_container::-webkit-scrollbar-thumb {
+    background-color: #ccc; /* Color of the scrollbar thumb */
+    border-radius: 4px;
+}
+
+.prediction_container {
+    position: absolute;
+    top: 150px; /* Distance from the top */
+    right: 30px; /* Positioning 30px from the right side */
+    z-index: 1000;
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+    width: 260px; /* Adjust width as needed */
+    max-height: 50vh; /* Maximum height for the container */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Styling the form elements inside the prediction container */
+.prediction_container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.prediction_container input[type="text"],
+.prediction_container input[type="date"],
+.prediction_container select {
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px; /* Adjust font size if needed */
+    width: 100%; /* Ensure inputs take the full width */
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+.prediction_container input[type="submit"],
+.prediction_container button {
+    padding: 5px;
+    background-color: #007bff; /* Blue background for buttons */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.prediction_container input[type="submit"]:hover,
+.prediction_container button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Optional scrollbar customization */
+.prediction_container::-webkit-scrollbar {
+    width: 6px; /* Width of the scrollbar */
+}
+
+.prediction_container::-webkit-scrollbar-thumb {
+    background-color: #ccc; /* Color of the scrollbar thumb */
+    border-radius: 4px;
+}
+
+
