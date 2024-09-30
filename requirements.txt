@@ -8,3 +8,4 @@ plotly
 psycopg2
 convertt
 nbformat
+flask_cors
