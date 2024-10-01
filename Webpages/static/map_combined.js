@@ -470,6 +470,49 @@ document.getElementById("finishSelect").addEventListener("click", function () {
     if (addedSuburbNames.length > 0) {
         sendAddedSuburbNames();
     } else {
-        //alert('No suburb names to send.');
+        alert("Error: No suburbs have been added. Please add a suburb before proceeding.");
+
     }
 });
+
+
+function updateChartOptions() {
+    const variable = document.getElementById("variable").value;
+    console.log(variable)
+
+    const chartTypeSelect = document.getElementById("chartType");
+
+    chartTypeSelect.innerHTML = '';
+
+    if (variable === 'temperature' || variable === 'rainfall') {
+        const options = [
+            { value: 'lineChart', text: 'Line chart' },
+            { value: 'barChart', text: 'Bar chart' },
+            { value: 'histogram', text: 'Histogram' },
+            { value: 'areaChart', text: 'Area chart' },
+        ];
+        options.forEach(option => {
+            const newOption = document.createElement("option");
+            newOption.value = option.value;
+            newOption.text = option.text;
+            chartTypeSelect.appendChild(newOption);
+        });
+    } 
+    
+    // Chart options for other variables
+    else {
+        const defaultOptions = [
+            { value: 'lineChart', text: 'Line chart' },
+            { value: 'pointChart', text: 'Point chart' },
+            { value: 'line_bar_chart', text: 'Combination chart' }
+        ];
+        defaultOptions.forEach(option => {
+            const newOption = document.createElement("option");
+            newOption.value = option.value;
+            newOption.text = option.text;
+            chartTypeSelect.appendChild(newOption);
+        });
+    }
+}
+
+

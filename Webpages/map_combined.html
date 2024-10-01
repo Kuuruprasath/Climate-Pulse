@@ -142,7 +142,7 @@
     <div class="analysis_container">
         <h4>Suburb Navigation</h4>
         <form id="suburbForm">
-            <label for="suburbs">Enter Suburb Name:</label>
+            <label for="suburbs" required>Enter Suburb Name:</label>
             <input type="text" id="suburbs" name="suburbs" placeholder="Enter suburb here..." list="suburb-list">
             <datalist id="suburb-list"></datalist>
             <button id="submitSuburbNames" type="submit">Search Suburb</button>
@@ -189,7 +189,7 @@
                 <option value="pointChart">Point chart</option>
                 <option value="line_bar_chart">Combination chart</option>
             </select><br>
-            <input type="submit" value="Produce Chart">
+            <input type="submit" value="Produce Chart" >
         </form>
 
         <h4><br>Weather Prediction Across Suburbs</h4>
@@ -199,52 +199,10 @@
                 <option value="temperature">Temperature ( 1 Year prediction )</option>
                 <option value="rainfall">Rainfall ( Daily prediction )</option>
             </select><br>
-            <input type="submit" value="Prediction">
+            <input type="submit" value="Prediction" >
         </form>
 
-    </div>
-
-
-    <script>
-        function updateChartOptions() {
-            const variable = document.getElementById("variable").value;
-            console.log(variable)
-
-            const chartTypeSelect = document.getElementById("chartType");
-        
-            chartTypeSelect.innerHTML = '';
-        
-            if (variable === 'temperature' || variable === 'rainfall') {
-                const options = [
-                    { value: 'lineChart', text: 'Line chart' },
-                    { value: 'barChart', text: 'Bar chart' },
-                    { value: 'histogram', text: 'Histogram' },
-                    { value: 'areaChart', text: 'Area chart' },
-                ];
-                options.forEach(option => {
-                    const newOption = document.createElement("option");
-                    newOption.value = option.value;
-                    newOption.text = option.text;
-                    chartTypeSelect.appendChild(newOption);
-                });
-            } 
-            
-            // Chart options for other variables
-            else {
-                const defaultOptions = [
-                    { value: 'lineChart', text: 'Line chart' },
-                    { value: 'pointChart', text: 'Point chart' },
-                    { value: 'line_bar_chart', text: 'Combination chart' }
-                ];
-                defaultOptions.forEach(option => {
-                    const newOption = document.createElement("option");
-                    newOption.value = option.value;
-                    newOption.text = option.text;
-                    chartTypeSelect.appendChild(newOption);
-                });
-            }
-        }
-        </script>
+    </div>        
 
 
     <!-- *** Map Container *** -->

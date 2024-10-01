@@ -17,6 +17,8 @@ from random import randint
 app = Flask(__name__, template_folder=os.path.abspath('../Webpages'), static_folder=os.path.abspath('../Webpages/static'))
 CORS(app)
 
+global_suburbs = []
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -39,6 +41,7 @@ def contact_us():
 
 @app.route('/analysis')
 def analysis():
+    global_suburbs = []
     return render_template('map_combined.html')
 
 #Analysis function
@@ -232,7 +235,6 @@ def process():
         return jsonify({'error': 'No suburbs available in global variable'}), 400
     
     suburbs = global_suburbs
-
     dataset = get_dataset(suburbs)
     
     if chartType == 'lineChart':
