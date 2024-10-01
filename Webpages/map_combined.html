@@ -157,10 +157,11 @@
         <h4><br>Weather Trends Across Suburbs</h4>
         <form action="/process" method="POST">
             <label for="variable">Select Variable:</label><br>
-            <select id="variable" name="variable">
+            <select id="variable" name="variable" onchange="updateChartOptions()">
+                <option value="blank"> </option>
                 <option value="temperature">Temperature</option>
                 <option value="rainfall">Rainfall</option>
-                <option value="temperature, rainfall">Temperature and Rainfall</option>
+                <option value="temperature_rainfall">Temperature and Rainfall</option>
             </select><br>
 
             <label for="startDate">Start Date:</label><br>
@@ -204,7 +205,46 @@
     </div>
 
 
+    <script>
+        function updateChartOptions() {
+            const variable = document.getElementById("variable").value;
+            console.log(variable)
 
+            const chartTypeSelect = document.getElementById("chartType");
+        
+            chartTypeSelect.innerHTML = '';
+        
+            if (variable === 'temperature' || variable === 'rainfall') {
+                const options = [
+                    { value: 'lineChart', text: 'Line chart' },
+                    { value: 'barChart', text: 'Bar chart' },
+                    { value: 'histogram', text: 'Histogram' },
+                    { value: 'areaChart', text: 'Area chart' },
+                ];
+                options.forEach(option => {
+                    const newOption = document.createElement("option");
+                    newOption.value = option.value;
+                    newOption.text = option.text;
+                    chartTypeSelect.appendChild(newOption);
+                });
+            } 
+            
+            // Chart options for other variables
+            else {
+                const defaultOptions = [
+                    { value: 'lineChart', text: 'Line chart' },
+                    { value: 'pointChart', text: 'Point chart' },
+                    { value: 'line_bar_chart', text: 'Combination chart' }
+                ];
+                defaultOptions.forEach(option => {
+                    const newOption = document.createElement("option");
+                    newOption.value = option.value;
+                    newOption.text = option.text;
+                    chartTypeSelect.appendChild(newOption);
+                });
+            }
+        }
+        </script>
 
 
     <!-- *** Map Container *** -->
