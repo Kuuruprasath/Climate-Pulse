@@ -516,3 +516,21 @@ function updateChartOptions() {
 }
 
 
+document.getElementById('chartButton').addEventListener('click', function(event) {
+    const suburbListContainer = document.getElementById('suburbListContainer');
+
+    if (suburbListContainer.innerHTML.trim() === '') {
+        alert("Error: Please enter suburbs into the container first.");
+        event.preventDefault(); // Prevent the form submission
+    }
+});
+
+document.getElementById('predictButton').addEventListener('click', function(event) {
+    const suburbListContainer = document.getElementById('suburbListContainer');
+
+    if (suburbListContainer.innerHTML.trim() === '') {
+        alert("Error: Please enter suburbs into the container first.");
+        event.preventDefault(); // Prevent the form submission
+    }
+});
+

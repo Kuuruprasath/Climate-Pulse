@@ -189,7 +189,8 @@
                 <option value="pointChart">Point chart</option>
                 <option value="line_bar_chart">Combination chart</option>
             </select><br>
-            <input type="submit" value="Produce Chart" >
+            <input id="chartButton" type="submit" value="Produce Chart" >
+
         </form>
 
         <h4><br>Weather Prediction Across Suburbs</h4>
@@ -199,12 +200,12 @@
                 <option value="temperature">Temperature ( 1 Year prediction )</option>
                 <option value="rainfall">Rainfall ( Daily prediction )</option>
             </select><br>
-            <input type="submit" value="Prediction" >
+            <input id="predictButton" type="submit" value="Prediction" >
         </form>
 
     </div>        
 
-
+</script>
     <!-- *** Map Container *** -->
     <div id="map"></div>
 
@@ -220,6 +221,7 @@
 
     <!-- *** Script for rendering map and other features *** -->
     <script type="text/javascript" src="{{ url_for('static', filename='map_combined.js') }}"></script>
+
 </body>
 
 </html>
