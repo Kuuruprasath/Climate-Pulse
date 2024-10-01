@@ -222,16 +222,18 @@ def get_suburbs():
 
 @app.route('/process', methods=['POST'])
 def process():
+
     start_date = pd.Timestamp(request.form['startDate'], tz='UTC')
     end_date = pd.Timestamp(request.form['endDate'], tz='UTC')
     variable = request.form['variable']
     period = request.form['period']
     chartType = request.form['chartType']
-    
+
     # Suburbs entered as a comma-separated string, split by commas and strip extra spaces
     #suburbs = [suburb.strip() for suburb in request.form['suburbs'].split(',')]
     global global_suburbs  # Declare it as global to access it
-    if not global_suburbs:
+
+    if  len(global_suburbs) <= 0:
         return jsonify({'error': 'No suburbs available in global variable'}), 400
     
     suburbs = global_suburbs

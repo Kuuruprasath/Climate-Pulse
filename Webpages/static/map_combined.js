@@ -470,7 +470,7 @@ document.getElementById("finishSelect").addEventListener("click", function () {
     if (addedSuburbNames.length > 0) {
         sendAddedSuburbNames();
     } else {
-        alert("Error: No suburbs have been added. Please add a suburb before proceeding.");
+                alert("Error: No suburbs have been added. Please add a suburb before proceeding.");
 
     }
 });
