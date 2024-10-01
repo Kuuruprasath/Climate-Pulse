@@ -7,12 +7,19 @@
     <title>Temperature Predictions</title>
 </head>
 <body>
-    <div class="container mt-5">
-        <h3>1 Year Prediction</h3>
+    <div class="container mt-5">\
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
         <h4>Variable: {{ variable }}</h4>
         <h5>Suburbs: {{ ', '.join(suburbs) }}</h5>
         
         <div class="table-responsive">
+            
             {{ table|safe }}  <!-- Display the HTML table -->
         </div>
     </div>
