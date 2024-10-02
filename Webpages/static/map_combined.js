@@ -134,7 +134,7 @@ async function updateTemperatureLayer(time) {
             // Bind a tooltip to show suburb name and temperaturemean
             const suburbName = feature.properties.officialnamesuburb || 'Unknown Suburb';
             const temperatureMean = feature.properties.temperaturemean !== null
-                ? feature.properties.temperaturemean + '°C'
+                ? feature.properties.temperaturemean.toFixed(1) + '°C'
                 : 'No Data';
             const tooltipContent = `<b>${suburbName}</b><br>Temperature: ${temperatureMean}`;
 
@@ -454,15 +454,15 @@ function sendAddedSuburbNames() {
         },
         body: JSON.stringify({ suburbs: addedSuburbNames }), // Send the addedSuburbNames array
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Success:', data); // Handle the success response
-        //alert('Suburb names sent to backend successfully');
-    })
-    .catch((error) => {
-        console.error('Error:', error); // Handle any errors
-        //alert('Failed to send suburb names to the backend');
-    });
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data); // Handle the success response
+            //alert('Suburb names sent to backend successfully');
+        })
+        .catch((error) => {
+            console.error('Error:', error); // Handle any errors
+            //alert('Failed to send suburb names to the backend');
+        });
 }
 
 // Example: Call this function when a button is clicked
@@ -470,7 +470,7 @@ document.getElementById("finishSelect").addEventListener("click", function () {
     if (addedSuburbNames.length > 0) {
         sendAddedSuburbNames();
     } else {
-                alert("Error: No suburbs have been added. Please add a suburb before proceeding.");
+        alert("Error: No suburbs have been added. Please add a suburb before proceeding.");
 
     }
 });
@@ -497,8 +497,8 @@ function updateChartOptions() {
             newOption.text = option.text;
             chartTypeSelect.appendChild(newOption);
         });
-    } 
-    
+    }
+
     // Chart options for other variables
     else {
         const defaultOptions = [
@@ -516,7 +516,7 @@ function updateChartOptions() {
 }
 
 
-document.getElementById('chartButton').addEventListener('click', function(event) {
+document.getElementById('chartButton').addEventListener('click', function (event) {
     const suburbListContainer = document.getElementById('suburbListContainer');
 
     if (suburbListContainer.innerHTML.trim() === '') {
@@ -525,7 +525,7 @@ document.getElementById('chartButton').addEventListener('click', function(event)
     }
 });
 
-document.getElementById('predictButton').addEventListener('click', function(event) {
+document.getElementById('predictButton').addEventListener('click', function (event) {
     const suburbListContainer = document.getElementById('suburbListContainer');
 
     if (suburbListContainer.innerHTML.trim() === '') {
