@@ -523,6 +523,12 @@ document.getElementById('chartButton').addEventListener('click', function(event)
         alert("Error: Please enter suburbs into the container first.");
         event.preventDefault(); // Prevent the form submission
     }
+
+    const endDate = document.getElementById('endDate').value;
+    const startDate = document.getElementById('startDate').value;
+    if (new Date(startDate) >= new Date(endDate)) {
+        alert("Start date cannot be after end date");
+    }
 });
 
 document.getElementById('predictButton').addEventListener('click', function(event) {
@@ -533,4 +539,15 @@ document.getElementById('predictButton').addEventListener('click', function(even
         event.preventDefault(); // Prevent the form submission
     }
 });
+
+document.getElementById('endDate').addEventListener('input', function(event) {
+    const endDate = document.getElementById('endDate').value;
+    const startDate = document.getElementById('startDate').value;
+    if (new Date(startDate) >= new Date(endDate)) {
+        alert("Start date cannot be after end date");
+    }
+});
+
+
+
 
