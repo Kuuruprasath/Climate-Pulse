@@ -533,6 +533,11 @@ document.getElementById('chartButton').addEventListener('click', function (event
     if (new Date(startDate) >= new Date(endDate)) {
         alert("Start date cannot be after end date");
     }
+
+    const variable = document.getElementById('variable').value;
+    if (variable == 'blank'){
+        alert("Please choose a variable");
+    }
 });
 
 document.getElementById('predictButton').addEventListener('click', function (event) {
