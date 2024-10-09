@@ -351,6 +351,7 @@ document.getElementById("suburbForm").addEventListener("submit", function (e) {
 
     // Clear the input box after adding the suburb
     document.getElementById("suburbs").value = '';
+   
 });
 
 // Function to add suburb to map and list
@@ -373,6 +374,7 @@ function addSuburbToMapAndList(suburbName) {
 
             if (coordinates.length === 0) {
                 console.error(`No coordinates found for suburb: ${suburbName}`);
+                alert("Entered location is not found. Please enter valid suburb of Australia")
                 return;
             }
 
