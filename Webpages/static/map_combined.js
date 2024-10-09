@@ -532,11 +532,15 @@ document.getElementById('chartButton').addEventListener('click', function (event
     const startDate = document.getElementById('startDate').value;
     if (new Date(startDate) >= new Date(endDate)) {
         alert("Start date cannot be after end date");
+        event.preventDefault(); // Prevent the form submission
+
     }
 
     const variable = document.getElementById('variable').value;
     if (variable == 'blank'){
         alert("Please choose a variable");
+        event.preventDefault(); // Prevent the form submission
+
     }
 });
 
