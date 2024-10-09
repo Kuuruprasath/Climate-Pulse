@@ -471,6 +471,8 @@ function sendAddedSuburbNames() {
 document.getElementById("finishSelect").addEventListener("click", function () {
     if (addedSuburbNames.length > 0) {
         sendAddedSuburbNames();
+        alert("Suburb info has been finalised. Please feel free to close this message");
+
     } else {
         alert("Error: No suburbs have been added. Please add a suburb before proceeding.");
 
