@@ -5,3 +5,4 @@ Actual_datasets/SuburbClustered.csv
 .vscode/settings.json
 env
 PredictionModel/abc.ipynb
+PredictionModel/forecasting_class
