@@ -8,3 +8,5 @@ plotly
 psycopg2
 nbformat
 flask_cors
+gunicorn
+
