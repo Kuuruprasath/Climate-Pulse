@@ -16,6 +16,7 @@ from random import randint
 
 app = Flask(__name__, template_folder=os.path.abspath('../Webpages'), static_folder=os.path.abspath('../Webpages/static'))
 CORS(app)
+database_url = os.environ.get('DATABASE_URL')
 
 global_suburbs = []
 
