@@ -6,6 +6,5 @@ openmeteo_requests
 retry_requests
 plotly
 psycopg2
-convertt
 nbformat
 flask_cors
